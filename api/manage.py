@@ -14,11 +14,7 @@ def create_all():
 
 def create_some(table_names):
     """Initialize the table for one specific model input by the user"""
-    targets = []
-    for table in tables:
-        for table_name in table_names:
-            if table_name == type(table).__name__:
-                targets.append(table)
+    targets = find_tables(table_names)
     if targets:
         with db:
             db.create_tables(targets)
@@ -34,16 +30,21 @@ def drop_all():
 
 def drop_some(table_names):
     """Initialize the table for one specific model input by the user"""
-    targets = []
-    for table in tables:
-        for table_name in table_names:
-            if table_name == type(table).__name__:
-                targets.append(table)
+    targets = find_tables(table_names)
     if targets:
         with db:
             db.drop_tables(targets)
     else:
         print("Enter valid tables")
+
+
+def find_tables(table_names):
+    targets = []
+    for table in tables:
+        for table_name in table_names:
+            if table_name.lower() == table.__name__.lower():
+                targets.append(table)
+    return targets
 
 
 def parse_args():

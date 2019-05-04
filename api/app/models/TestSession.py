@@ -1,9 +1,9 @@
 """Stores info for a group chat"""
 from datetime import datetime
 
-from playhouse.postgres_ext import (BooleanField, CharField, DateTimeField,
+from playhouse.postgres_ext import (BooleanField, DateTimeField,
                                     ForeignKeyField, JSONField,
-                                    PrimaryKeyField)
+                                    PrimaryKeyField, TextField)
 
 from .AirFrame import AirFrame
 from .BaseModel import BaseModel
@@ -11,21 +11,21 @@ from .BaseModel import BaseModel
 
 class TestSession(BaseModel):
     id = PrimaryKeyField()
-    preparer = CharField()  # Liable for the days flights
-    location = CharField()  # Where did the flight tests occur
+    preparer = TextField()  # Liable for the days flights
+    location = TextField()  # Where did the flight tests occur
     air_frame = ForeignKeyField(AirFrame)  # Which drone is flying
     airspace_notified = BooleanField(null=True)  # FCC Approval
-    test_purpose = CharField()  # Why are you flying
+    test_purpose = TextField()  # Why are you flying
     start_time = DateTimeField(
         default=datetime.now)  # When did the tests begin
     end_time = DateTimeField()  # When did tests conclude
-    pilot = CharField()  # Who is on the stick
-    pilot_in_command = CharField()  # ?
-    part_107 = CharField(null=True)  # FCC Approval
-    weather = CharField()
-    terrain = CharField()
+    pilot = TextField()  # Who is on the stick
+    pilot_in_command = TextField()  # ?
+    part_107 = TextField(null=True)  # FCC Approval
+    weather = TextField()
+    terrain = TextField()
     populated_area = BooleanField()  # Is the area populated
-    other_hazards = CharField(null=True)
+    other_hazards = TextField(null=True)
 
     pf_visual_frame = BooleanField()
     pf_visual_motors = BooleanField()

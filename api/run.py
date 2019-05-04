@@ -19,7 +19,7 @@ def main() -> None:
     host: str = args.host or DEFAULT_HOST
     port: int = args.port or DEFAULT_PORT
 
-    app.run(host=host, port=port, use_reloader=False)
+    app.run(host=host, port=port, debug=True)
     logger.info("Starting server on %s:%d", host, port)
 
 
