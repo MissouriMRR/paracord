@@ -2,8 +2,8 @@
 import argparse
 import time
 
-from app.models import tables
-from app.serve import db
+from paracord.models import tables
+from paracord.serve import db
 
 
 def create_all():

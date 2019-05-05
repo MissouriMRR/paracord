@@ -2,7 +2,7 @@
 import argparse
 import logging
 
-from app import app
+from paracord import paracord
 
 DEFAULT_HOST: str = "localhost"
 DEFAULT_PORT: int = 3000
@@ -19,7 +19,7 @@ def main() -> None:
     host: str = args.host or DEFAULT_HOST
     port: int = args.port or DEFAULT_PORT
 
-    app.run(host=host, port=port, debug=True)
+    paracord.run(host=host, port=port)
     logger.info("Starting server on %s:%d", host, port)
 
 

@@ -9,7 +9,7 @@ import coloredlogs
 from dotenv import load_dotenv
 from playhouse.postgres_ext import PostgresqlExtDatabase
 
-load_dotenv(dotenv_path='./.env')
+load_dotenv(dotenv_path='./.docker/web.env')
 
 logger = logging.getLogger(__name__)
 coloredlogs.install(level='DEBUG')
@@ -19,8 +19,9 @@ DB_HOST = os.getenv("DB_HOST")
 DB_USER = os.getenv("DB_USER")
 DB_PASS = os.getenv("DB_PASS")
 
-app = Flask(__name__)
-app.config.from_object('config')
+paracord = Flask(__name__)
+paracord.config.from_object('config')
+
 logger.debug("Attempting to connect to %s at %s:%s@%s:%d", DB_NAME, DB_USER,
              DB_PASS, DB_HOST, 5432)
 db = PostgresqlExtDatabase(

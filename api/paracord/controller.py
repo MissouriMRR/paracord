@@ -4,7 +4,7 @@ import logging
 from flask import Blueprint, jsonify, request, url_for
 from playhouse.shortcuts import model_to_dict
 
-from app.models import AirFrame, Flight, TestSession
+from paracord.models import AirFrame, Flight, TestSession
 
 logger = logging.getLogger(__name__)
 
