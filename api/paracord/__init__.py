@@ -1,4 +1,4 @@
-from paracord.controller import flights, frames, sessions
+from paracord.controllers import frames, sessions
 from paracord.serve import paracord
 
 
@@ -8,5 +8,4 @@ def not_found(error):
 
 
 paracord.register_blueprint(sessions)
-paracord.register_blueprint(flights)
 paracord.register_blueprint(frames)
