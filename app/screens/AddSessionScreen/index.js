@@ -1,16 +1,16 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import AddLogAppNavigator from "../../navigation/AddLogAppNavigator";
+import AddSessionNavigator from "../../navigation/AddSessionNavigator";
 
-export default class LinksScreen extends React.Component {
+export default class AddSessionScreen extends React.Component {
   static navigationOptions = {
-    title: "New Flight Log"
+    title: "New Session"
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <AddLogAppNavigator />
+        <AddSessionNavigator />
       </View>
     );
   }

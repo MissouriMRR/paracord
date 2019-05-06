@@ -1,6 +1,6 @@
-# flight-logger
+# Paracord
 
-Flight logger is a service for Multirotor Robot Design Team to easily log their flights and collect useful information.
+Paracord is a cross-platform app designed by and for Missouri S&T's Multirotor Robot Design Team to easily log flight sessions and collect useful information.
 
 ## Installation
 
