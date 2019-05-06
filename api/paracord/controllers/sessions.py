@@ -101,7 +101,10 @@ def list_session_flights(sess_id):
             model_to_dict(x, recurse=False)
             for x in Flight.select().where(Flight.session == sess_id)
         ]
-        return jsonify(res), 200
+        if res:
+            return jsonify(res), 200
+        else:
+            raise Exception()
     except Exception as e:
         logger.error("ERROR: %s", str(e))
         return "", 404
