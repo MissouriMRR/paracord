@@ -10,6 +10,7 @@ Requirements:
 * [Node.js](https://nodejs.org/en/)
 * [yarn](https://yarnpkg.com/en/)
 * **Expo\***
+
 **\*** The app is written using Expo. Installation instructions can be found on the [Expo Documentation](https://docs.expo.io/versions/latest/introduction/installation/).
 
 ### API
