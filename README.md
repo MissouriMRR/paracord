@@ -1,29 +1,51 @@
-# flight-logger
+# Paracord 🚁
 
-Flight logger is a service for Multirotor Robot Design Team to easily log their flights and collect useful information.
+Paracord is a cross-platform app designed by and for Missouri S&T's Multirotor Robot Design Team to easily log flight sessions and collect useful information.
 
 ## Installation
 
-Uses Expo for `app` and python flask for `api
+### App
 
-## Expo
+Requirements:
+* [Node.js](https://nodejs.org/en/)
+* [yarn](https://yarnpkg.com/en/)
+* **Expo\***
+**\*** The app is written using Expo. Installation instructions can be found on the [Expo Documentation](https://docs.expo.io/versions/latest/introduction/installation/).
 
-Expo needs Node.js (version 10 or newer), The Expo CLI development tool, and the Expo Client app.
+### API
+This can be run on any modern computer
 
-Install Expo CLI development tool
+#### Windows/Mac OS
+* Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-If Nodejs is installed them the following command can be used to install Expo Client: 
-"npm install -g expo-cli"
+#### Linux
+* Install Docker
+* Install Docker Compose
 
-Download "Expo Client" app on mobile device. More info at https://docs.expo.io/versions/latest/
+## Usage
 
-## Python flask
+### App
+In the `app` folder, run the following command:
 
-Install flask using: "pip3 install flask"
+```bash
+$ yarn start
+```
 
-## Server
+### Server
+In the `api` folder, run the following commands:
 
-Go folder with server file,run: "python3 filename --host=localhost --port=10000
+1. Build and generate all necessary servers and databases
+```bash
 
--v can be added to include debugging information
+$ docker-compose up
 
+```
+2. Use Ctrl-C to close the session
+3. Restart the container
+```bash
+
+$ docker-compose up
+
+```
+
+You can now navigate to [http://localhost/api/v1/flights](http://localhost/api/v1/flights)
