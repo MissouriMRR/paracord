@@ -33,6 +33,8 @@ In the `app` folder, run the following command:
 $ yarn start
 ```
 
+Now on your mobile device, install the Expo app for your platform and scan the QR code to run the app live.
+
 ### Server
 In the `api` folder, run the following commands:
 
