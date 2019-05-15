@@ -15,12 +15,13 @@ Requirements:
 ### API
 This can be run on any modern computer
 
-#### Windows/Mac OS
-* Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+Install:
+* Docker
+* Docker Compose
 
-#### Linux
-* Install Docker
-* Install Docker Compose
+Information about how to install for your platform can be found [here](https://docs.docker.com/install/).
+
+On Windows and MacOS you will need to install Docker Desktop.
 
 ## Usage
 
