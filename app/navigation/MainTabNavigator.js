@@ -6,15 +6,15 @@ import {
 } from "react-navigation";
 
 import TabBarIcon from "../components/TabBarIcon";
-import FlightsScreen from "../screens/FlightsScreen";
-import AddLogScreen from "../screens/AddLogScreen/index";
+import SessionsScreen from "../screens/SessionsScreen";
+import AddSessionScreen from "../screens/AddSessionScreen/index";
 
-const FlightsStack = createStackNavigator({
-  Flights: FlightsScreen
+const SessionsStack = createStackNavigator({
+  Sessions: SessionsScreen
 });
 
-FlightsStack.navigationOptions = {
-  tabBarLabel: "Flights",
+SessionsStack.navigationOptions = {
+  tabBarLabel: "Sessions",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -27,12 +27,12 @@ FlightsStack.navigationOptions = {
   )
 };
 
-const AddLogStack = createStackNavigator({
-  AddLog: AddLogScreen
+const AddSessionStack = createStackNavigator({
+  AddSession: AddSessionScreen
 });
 
-AddLogStack.navigationOptions = {
-  tabBarLabel: "Add Flight",
+AddSessionStack.navigationOptions = {
+  tabBarLabel: "Add Session",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -42,6 +42,6 @@ AddLogStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  FlightsStack,
-  AddLogStack
+  SessionsStack,
+  AddSessionStack
 });

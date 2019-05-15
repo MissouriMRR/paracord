@@ -6,8 +6,8 @@ import {
 } from "react-navigation";
 
 import TabBarIcon from "../components/TabBarIcon";
-import PreflightScreen from "../screens/AddLogScreen/PreflightScreen";
-import FlightsScreen from "../screens/AddLogScreen/FlightsScreen";
+import PreflightScreen from "../screens/AddSessionScreen/PreflightScreen";
+import FlightsScreen from "../screens/AddSessionScreen/FlightsScreen";
 
 const PreflightStack = createStackNavigator({
   Preflight: PreflightScreen
@@ -32,11 +32,11 @@ const FlightsStack = createStackNavigator({
 });
 
 FlightsStack.navigationOptions = {
-  tabBarLabel: "Add Flight",
+  tabBarLabel: "Flights",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === "ios" ? "ios-add-circle" : "md-add-circle"}
+      name={Platform.OS === "ios" ? "ios-list" : "md-list"}
     />
   )
 };

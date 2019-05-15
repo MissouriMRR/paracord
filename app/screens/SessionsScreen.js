@@ -12,9 +12,9 @@ import {
   Icon
 } from "native-base";
 
-export default class HomeScreen extends React.Component {
+export default class SessionsScreen extends React.Component {
   static navigationOptions = {
-    title: "Past Flights"
+    title: "Sessions"
   };
 
   render() {
