@@ -1,6 +1,6 @@
-import { Left, ListItem, Right, View } from "native-base"
-import React from "react"
-import { Alert, Button, FlatList, StyleSheet, Switch, Text } from "react-native"
+import { Left, ListItem, Right, View } from "native-base";
+import React from "react";
+import { Alert, Button, FlatList, StyleSheet, Switch, Text, TextInput } from "react-native";
 
 export default class HomeScreen extends React.Component {
 	static navigationOptions = {
@@ -10,16 +10,35 @@ export default class HomeScreen extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			switchValues: [
-				{ key: 'Build the drone', value: false },
-				{ key: 'Calibate the GPS', value: false },
-				{ key: 'Reticulate the spline', value: false },
-				{ key: 'Calculate the spleen', value: false },
-				{ key: 'Eat the snozzberries', value: false },
-				{ key: 'Recalibrate the GPS', value: false },
-				{ key: 'Remove the appendix', value: false },
-				{ key: 'Hang the net', value: false },
-				{ key: 'Clear the zone', value: false },
+			inputValues: [
+				{ key: 'Prepared by', type: 'text', value: '' },
+				{ key: 'Location', type: 'text', value: '' },
+				{ key: 'Drone', type: 'text', value: '' },
+				{ key: 'Airspace Notified', type: 'switch', value: false },
+				{ key: 'Purpose', type: 'text', value: '' },
+				//{ key: 'Start Time', type: 'time', value: null},
+				//{ key: 'End Time', type: 'time', value: null},
+				{ key: 'Pilot', type: 'text', value: '' },
+				{ key: 'Pilot in Command', type: 'text', value: '' },
+				{ key: 'FCC Approved™', type: 'switch', value: false },
+				{ key: 'Weather', type: 'text', value: '' },
+				{ key: 'Terrain', type: 'text', value: '' },
+				{ key: 'Populated', type: 'switch', value: false },
+				{ key: 'Extra Hazards', type: 'text', value: '' },
+				/* Visual Inspection */
+				{ key: 'Frame', type: 'switch', value: false },
+				{ key: 'Motors', type: 'switch', value: false },
+				{ key: 'Props', type: 'switch', value: false },
+				{ key: 'Batteries', type: 'switch', value: false },
+				{ key: 'Sensors', type: 'switch', value: false },
+				/* Systems */
+				{ key: 'Ground Control', type: 'switch', value: false },
+				{ key: 'Range Finder', type: 'switch', value: false },
+				{ key: 'Optical Flow', type: 'switch', value: false },
+				{ key: 'Onboard CPU', type: 'switch', value: false },
+				{ key: 'Flight Board', type: 'switch', value: false },
+				{ key: 'Voltage Alarm', type: 'switch', value: false },
+				{ key: 'Failsafe', type: 'switch', value: false },
 			]
 		}
 	}
@@ -28,22 +47,35 @@ export default class HomeScreen extends React.Component {
 		return (
 			<View style={styles.container}>
 				<FlatList
-					data={this.state.switchValues}
+					data={this.state.inputValues}
 					renderItem={({ item, index }) => (
 						<ListItem>
 							<Left><Text>{item.key}</Text></Left>
-							<Right><Switch value={this.state.switchValues[index].value}
-								onValueChange={val => {
-									let values = [...this.state.switchValues]
-									values[index] = { ...values[index], value: val }
-									this.setState({ switchValues: values })
-								}} />
-							</Right>
+							{
+								/* if */ item.type == 'switch' && (
+									<Right>
+										<Switch value={this.state.inputValues[index].value}
+											onValueChange={value => {
+												let values = [...this.state.inputValues]
+												values[index] = { ...values[index], value: value }
+												this.setState({ inputValues: values })
+											}} />
+									</Right>
+								) /* else if */ || item.type == 'text' && (
+									<TextInput value={this.state.inputValues[index].value}
+										style={styles.textInput}
+										onChangeText={text => {
+											let values = [...this.state.inputValues]
+											values[index] = { ...values[index], value: text }
+											this.setState({ inputValues: values })
+										}} />
+								)
+							}
 						</ListItem>
 					)}
 				/>
 				<Button title='Let&apos;s Go!'
-					disabled={this.state.switchValues.some(switches => !switches.value)}
+					disabled={this.state.inputValues.some(input => input.type === 'switch' && !input.value)}
 					onPress={() => Alert.alert(
 						'Let\'s Go!',
 						'Are you ready to fly?',
@@ -68,7 +100,10 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		paddingTop: 15,
 		backgroundColor: "#fff"
+	},
+	textInput: {
+		textAlign: 'right',
+		flex: 1
 	}
 })
