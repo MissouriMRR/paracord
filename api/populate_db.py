@@ -4,14 +4,15 @@ from typing import List
 
 import requests
 
-URL_BASE: str = "http://localhost/api/v1/"
+URL_HOSTNAME: str = "localhost"
+URL_BASE: str = "http://"+URL_HOSTNAME+"/api/v1/"
 words: List[str] = []
 
 NUM_FRAMES: int = 10
 NUM_SESSIONS: int = 20
 NUM_FLIGHTS: int = 50
 
-with open("/usr/share/dict/words") as wlist:
+with open("./words.txt") as wlist:
     for line in wlist:
         words.append(line[:-1])
 
