@@ -1,6 +1,33 @@
-import { Left, ListItem, Right, View } from "native-base";
+import { Left, ListItem, Right, View, Picker } from "native-base";
 import React from "react";
 import { Alert, Button, FlatList, StyleSheet, Switch, Text, TextInput } from "react-native";
+
+const URL_HOSTNAME = "192.168.99.100"
+const URL_BASE = "http://" + URL_HOSTNAME + "/api/v1/"
+
+
+const post_session = (values) => {
+	let body = {}
+	values.forEach(state => body[state.key] = state.value)
+
+	console.log(`sending POST:${JSON.stringify(body)} to ${URL_BASE}sessions/`)
+
+	fetch(URL_BASE + "sessions/", {
+		method: 'POST',
+		body: JSON.stringify(body)
+	}).then(response => {
+		//TODO
+		console.log("HTTP POST RESPONSE::" + response.toString())
+	}).catch(reason => Alert.alert(
+		'Error',
+		`There was an error creating the session\n${reason}`,
+		[{
+			text: 'OK',
+			onPress: () => { },
+		}],
+		{ cancelable: false },
+	))
+}
 
 export default class HomeScreen extends React.Component {
 	static navigationOptions = {
@@ -11,36 +38,44 @@ export default class HomeScreen extends React.Component {
 		super(props)
 		this.state = {
 			inputValues: [
-				{ key: 'Prepared by', type: 'text', value: '' },
-				{ key: 'Location', type: 'text', value: '' },
-				{ key: 'Drone', type: 'text', value: '' },
-				{ key: 'Airspace Notified', type: 'switch', value: false },
-				{ key: 'Purpose', type: 'text', value: '' },
-				//{ key: 'Start Time', type: 'time', value: null},
-				//{ key: 'End Time', type: 'time', value: null},
-				{ key: 'Pilot', type: 'text', value: '' },
-				{ key: 'Pilot in Command', type: 'text', value: '' },
-				{ key: 'FCC Approved™', type: 'switch', value: false },
-				{ key: 'Weather', type: 'text', value: '' },
-				{ key: 'Terrain', type: 'text', value: '' },
-				{ key: 'Populated', type: 'switch', value: false },
-				{ key: 'Extra Hazards', type: 'text', value: '' },
-				/* Visual Inspection */
-				{ key: 'Frame', type: 'switch', value: false },
-				{ key: 'Motors', type: 'switch', value: false },
-				{ key: 'Props', type: 'switch', value: false },
-				{ key: 'Batteries', type: 'switch', value: false },
-				{ key: 'Sensors', type: 'switch', value: false },
-				/* Systems */
-				{ key: 'Ground Control', type: 'switch', value: false },
-				{ key: 'Range Finder', type: 'switch', value: false },
-				{ key: 'Optical Flow', type: 'switch', value: false },
-				{ key: 'Onboard CPU', type: 'switch', value: false },
-				{ key: 'Flight Board', type: 'switch', value: false },
-				{ key: 'Voltage Alarm', type: 'switch', value: false },
-				{ key: 'Failsafe', type: 'switch', value: false },
+
+				// DUMMY VALUES //
+
+				{ key: 'preparer', name: 'Prepared by', type: 'text', value: 'me', required: true },
+				{ key: 'location', name: 'Location', type: 'text', value: 'here', required: true },
+				{ key: 'air_frame', name: 'Drone', type: 'picker', options: [], value: 0, required: true },
+				//{ key: 'airspace_notified' name: 'Airspace Notified', type: 'switch', value: false },
+				{ key: 'test_purpose', name: 'Purpose', type: 'text', value: 'none', required: true },
+				//{ name: 'Start Time', type: 'time', value: null},
+				//{ name: 'End Time', type: 'time', value: null},
+				{ key: 'pilot', name: 'Pilot', type: 'text', value: 'me', required: true },
+				{ key: 'pilot_in_command', name: 'Pilot in Command', type: 'text', value: 'also me', required: false },
+				//{ name: 'FCC Approved™', type: 'switch', value: false },
+				{ key: 'weather', name: 'Weather', type: 'text', value: '', required: false }, // Dropdown?
+				{ key: 'terrain', name: 'Terrain', type: 'text', value: '', required: false }, // Dropdown?
+				{ key: 'populated_area', name: 'Populated', type: 'switch', value: false, required: false },
+				{ key: 'extra_hazards', name: 'Extra Hazards', type: 'text', value: '', required: false },
+
+				// Visual Inspection //
+				{ key: 'pf_visual_frame', name: 'Frame', type: 'switch', value: true, required: true },
+				{ key: 'pf_visual_motors', name: 'Motors', type: 'switch', value: true, required: true },
+				{ key: 'pf_visual_props', name: 'Props', type: 'switch', value: true, required: true },
+				{ key: 'pf_visual_batteries', name: 'Batteries', type: 'switch', value: true, required: true },
+				{ key: 'pf_visual_sensors', name: 'Sensors', type: 'switch', value: true, required: true },
+
+				// Systems //
+				{ key: 'pf_systems_ground_control', name: 'Ground Control', type: 'switch', value: true, required: true },
+				{ key: 'pf_systems_range_finder', name: 'Range Finder', type: 'switch', value: true, required: true },
+				{ key: 'pf_systems_optical_flow', name: 'Optical Flow', type: 'switch', value: true, required: true },
+				{ key: 'pf_systems_onboard_cpu', name: 'Onboard CPU', type: 'switch', value: true, required: true },
+				{ key: 'pf_systems_flight_board', name: 'Flight Board', type: 'switch', value: true, required: true },
+				{ key: 'pf_systems_voltage_alarm', name: 'Voltage Alarm', type: 'switch', value: true, required: true },
+				{ key: 'pf_systems_failsafe', name: 'Failsafe', type: 'switch', value: true, required: true },
 			]
 		}
+		fetch(URL_BASE + "frames/")
+			.then(response => response.json())
+			.then(json => this.state.inputValues.find(a => a.key == 'air_frame').options = json)
 	}
 
 	render() {
@@ -50,9 +85,9 @@ export default class HomeScreen extends React.Component {
 					data={this.state.inputValues}
 					renderItem={({ item, index }) => (
 						<ListItem>
-							<Left><Text>{item.key}</Text></Left>
+							<Left><Text>{item.name}</Text></Left>
 							{
-								/* if */ item.type == 'switch' && (
+								item.type == 'switch' && (
 									<Right>
 										<Switch value={this.state.inputValues[index].value}
 											onValueChange={value => {
@@ -61,7 +96,7 @@ export default class HomeScreen extends React.Component {
 												this.setState({ inputValues: values })
 											}} />
 									</Right>
-								) /* else if */ || item.type == 'text' && (
+								) || item.type == 'text' && (
 									<TextInput value={this.state.inputValues[index].value}
 										style={styles.textInput}
 										onChangeText={text => {
@@ -69,34 +104,59 @@ export default class HomeScreen extends React.Component {
 											values[index] = { ...values[index], value: text }
 											this.setState({ inputValues: values })
 										}} />
+								) || item.type == 'picker' && (
+									<Picker selectedValue={this.state.inputValues[index].value}
+										onValueChange={value => {
+											let values = [...this.state.inputValues]
+											values[index] = { ...values[index], value: value }
+											this.setState({ inputValues: values })
+										}}>
+										{this.state.inputValues[index].options.map(option => <Picker.Item key={option.id} label={option.name} value={option.id} />)}
+									</Picker>
 								)
 							}
 						</ListItem>
 					)}
 				/>
-				<Button title='Let&apos;s Go!'
-					disabled={this.state.inputValues.some(input => input.type === 'switch' && !input.value)}
+				<Button
+					title='Let&apos;s Go!'
+					disabled={this.state.inputValues.some(input => input.required && (!input.value))}
 					onPress={() => Alert.alert(
 						'Let\'s Go!',
 						'Are you ready to fly?',
-						[
-							{
-								text: 'Nah',
-								onPress: () => console.log('y\'ain\'t'),
-								style: 'cancel',
-							},
-							{
-								text: 'YE',
-								onPress: () => console.log('nyoom'),
-							},
-						],
+						[{
+							text: 'Cancel',
+							onPress: () => { },
+							style: 'cancel',
+						},
+						{
+							text: 'OK',
+							onPress: () => post_session(this.state.inputValues),
+						}],
 						{ cancelable: false },
-					)} />
+					)}
+				/>
 			</View>
 		)
 	}
 }
 
+
+
+
+/*
+for i in range(NUM_FLIGHTS):
+    resp = requests.post(
+        URL_BASE + "sessions/" + str(i % NUM_SESSIONS) + "/flights",
+        json={
+            "start_time": str(datetime.now()),
+            "end_time":
+            str(datetime.now() + timedelta(minutes=randint(1, 30))),
+            "description": " ".join([rword() for _ in range(randint(6, 30))]),
+            "success": True,
+            "outcome": " ".join([rword() for _ in range(randint(6, 17))])
+        })
+*/
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
