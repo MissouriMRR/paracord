@@ -22,7 +22,10 @@ Install:
 
 Information about how to install for your platform can be found [here](https://docs.docker.com/install/).
 
-On Windows and MacOS you will need to install Docker Desktop.
+If you're not running Linux, good luck.
+On Windows (Enterprise or Pro Edition) and MacOS you will need to install Docker Desktop.
+Docker Desktop is not supported on Windows 10 Home Edition. 
+You can use [Docker Toolbox](https://docs.docker.com/toolbox/toolbox_install_windows/) instead.
 
 ## Usage
 
@@ -52,7 +55,7 @@ $ docker-compose up
 
 ```
 
-You can now navigate to [http://localhost/api/v1/flights](http://localhost/api/v1/flights)
+You can now navigate to [http://localhost/api/v1/sessions](http://localhost/api/v1/sessions)
 
 ## How to contribute
 1. First make sure you are on the up to date `develop` branch.

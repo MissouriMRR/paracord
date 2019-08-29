@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Runs the server"""
 import argparse
 import logging
