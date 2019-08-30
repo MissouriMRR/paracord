@@ -11,6 +11,7 @@ python-dotenv = "*"
 peewee = "*"
 psycopg2 = "==2.7.5"
 coloredlogs = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"
