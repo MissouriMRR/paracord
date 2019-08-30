@@ -16,9 +16,8 @@ class TestSession(BaseModel):
     air_frame = ForeignKeyField(AirFrame)  # Which drone is flying
     airspace_notified = BooleanField(null=True)  # FCC Approval
     test_purpose = TextField()  # Why are you flying
-    start_time = DateTimeField(
-        default=datetime.now)  # When did the tests begin
-    end_time = DateTimeField()  # When did tests conclude
+    start_time = DateTimeField(default=datetime.now)  # When did the tests begin
+    end_time = DateTimeField(default=datetime.now)  # When did tests conclude
     pilot = TextField()  # Who is on the stick
     pilot_in_command = TextField()  # ?
     part_107 = TextField(null=True)  # FCC Approval

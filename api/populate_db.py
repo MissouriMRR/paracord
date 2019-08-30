@@ -4,7 +4,7 @@ from typing import List
 
 import requests
 
-URL_HOSTNAME: str = "localhost"
+URL_HOSTNAME: str = "192.168.99.100" # If you are using Docker Toolbox, use '192.168.99.100' otherwise use 'localhost' 
 URL_BASE: str = "http://"+URL_HOSTNAME+"/api/v1/"
 words: List[str] = []
 

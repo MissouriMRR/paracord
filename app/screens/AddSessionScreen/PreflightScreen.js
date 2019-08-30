@@ -1,19 +1,17 @@
 import { Left, ListItem, Right, View, Picker } from "native-base";
 import React from "react";
+import Network from "../../constants/Network.js"
 import { Alert, Button, FlatList, StyleSheet, Switch, Text, TextInput } from "react-native";
-
-const URL_HOSTNAME = "192.168.99.100"
-const URL_BASE = "http://" + URL_HOSTNAME + "/api/v1/"
-
 
 const post_session = (values) => {
 	let body = {}
-	values.forEach(state => body[state.key] = state.value)
+	values.forEach(val => body[val.key] = val.value)
 
 	console.log(`sending POST:${JSON.stringify(body)} to ${URL_BASE}sessions/`)
 
-	fetch(URL_BASE + "sessions/", {
+	fetch(Network.URL_BASE + "sessions/", {
 		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(body)
 	}).then(response => {
 		//TODO
@@ -25,7 +23,7 @@ const post_session = (values) => {
 			text: 'OK',
 			onPress: () => { },
 		}],
-		{ cancelable: false },
+		{ cancelable: false }
 	))
 }
 
@@ -43,7 +41,7 @@ export default class HomeScreen extends React.Component {
 
 				{ key: 'preparer', name: 'Prepared by', type: 'text', value: 'me', required: true },
 				{ key: 'location', name: 'Location', type: 'text', value: 'here', required: true },
-				{ key: 'air_frame', name: 'Drone', type: 'picker', options: [], value: 0, required: true },
+				{ key: 'air_frame', name: 'Drone', type: 'picker', options: [], value: -1, required: true },
 				//{ key: 'airspace_notified' name: 'Airspace Notified', type: 'switch', value: false },
 				{ key: 'test_purpose', name: 'Purpose', type: 'text', value: 'none', required: true },
 				//{ name: 'Start Time', type: 'time', value: null},
@@ -73,9 +71,17 @@ export default class HomeScreen extends React.Component {
 				{ key: 'pf_systems_failsafe', name: 'Failsafe', type: 'switch', value: true, required: true },
 			]
 		}
-		fetch(URL_BASE + "frames/")
+		fetch(Network.URL_BASE + "frames/")
 			.then(response => response.json())
 			.then(json => this.state.inputValues.find(a => a.key == 'air_frame').options = json)
+			.catch(reason => Alert.alert(
+				'Error',
+				`There was an error connecting to the dataabase\n${reason}`,
+				[{
+					text: 'OK',
+					onPress: () => { },
+				}],
+				{ cancelable: false }))
 	}
 
 	render() {
@@ -105,12 +111,16 @@ export default class HomeScreen extends React.Component {
 											this.setState({ inputValues: values })
 										}} />
 								) || item.type == 'picker' && (
-									<Picker selectedValue={this.state.inputValues[index].value}
+									<Picker prompt={item.name}
+										selectedValue={this.state.inputValues[index].value}
 										onValueChange={value => {
 											let values = [...this.state.inputValues]
 											values[index] = { ...values[index], value: value }
 											this.setState({ inputValues: values })
+											console.log(this.state.inputValues[index].options)
+											console.log(value)
 										}}>
+										<Picker.Item label='Please Select' value={-1} />
 										{this.state.inputValues[index].options.map(option => <Picker.Item key={option.id} label={option.name} value={option.id} />)}
 									</Picker>
 								)
@@ -120,7 +130,7 @@ export default class HomeScreen extends React.Component {
 				/>
 				<Button
 					title='Let&apos;s Go!'
-					disabled={this.state.inputValues.some(input => input.required && (!input.value))}
+					disabled={this.state.inputValues.some(input => input.required && ((input.type == 'picker' && input.value == -1) || (!input.value)))}
 					onPress={() => Alert.alert(
 						'Let\'s Go!',
 						'Are you ready to fly?',

@@ -1,62 +1,50 @@
+import { Container, Content, Icon, Left, ListItem, Right, Text, Item } from "native-base";
 import React from "react";
-import { StyleSheet } from "react-native";
-import {
-  Container,
-  Header,
-  Content,
-  List,
-  ListItem,
-  Text,
-  Left,
-  Right,
-  Icon
-} from "native-base";
+import Network from "../constants/Network.js"
+import { FlatList, StyleSheet, Alert } from "react-native";
 
 export default class SessionsScreen extends React.Component {
-  static navigationOptions = {
-    title: "Sessions"
-  };
+	static navigationOptions = {
+		title: "Sessions"
+	};
 
-  render() {
-    return (
-      <Container>
-        <Content>
-          <List>
-            <ListItem>
-              <Left>
-                <Text>Apr 27, 2019</Text>
-              </Left>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Left>
-                <Text>Apr 24, 2019</Text>
-              </Left>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Left>
-                <Text>Apr 23, 2019</Text>
-              </Left>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-          </List>
-        </Content>
-      </Container>
-    );
-  }
+	constructor(props) {
+		super(props)
+		this.state = { sessions: [] }
+		fetch(Network.URL_BASE + "sessions/")
+			.then(response => response.json())
+			.then(json => this.setState({ sessions: json }))
+			.catch(reason => Alert.alert(
+				'Error',
+				`There was an error connecting to the database\n${reason}`,
+				[{
+					text: 'OK',
+					onPress: () => { }
+				}],
+				{ cancelable: false }))
+	}
+
+	render() {
+		return (
+			<Container>
+				<Content>
+					<FlatList
+						data={this.state.sessions}
+						keyExtractor={item => `${item.id}`}
+						renderItem={({ item }) => (
+							<ListItem onPress={event => { /* TODO navigate to session screen */ }}>
+								<Left>
+									<Text>{item.start_time}</Text>
+								</Left>
+								<Right>
+									<Icon name="arrow-forward" />
+								</Right>
+							</ListItem>
+						)}
+					/>
+					{ /* TODO floating action button for new session */ }
+				</Content>
+			</Container>
+		)
+	}
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 15,
-    backgroundColor: "#fff"
-  }
-});
