@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import Any, List
 
 from flask import Blueprint, jsonify, request, url_for
 
@@ -34,11 +34,11 @@ def post_session():
     Creates a new session
     """
     try:
-        data = request.get_json()
-        sess_id: int = TestSession.create(**data).id
-        response = jsonify()
-        response.status_code = 201
-        response.headers['location'] = '/api/v1/sessions/' + str(sess_id)
+        data: dict = request.get_json()
+        sess: dict = model_to_dict(TestSession.create(**data), recurse=False)
+        response: Any = jsonify(sess)
+        response.status_code = 200
+        response.headers['location'] = '/api/v1/sessions/' + str(sess["id"])
         return response
     except Exception as e:
         logger.error("ERROR: %s", str(e))
@@ -114,11 +114,13 @@ def list_session_flights(sess_id):
 def post_flight(sess_id):
     try:
         data: dict = request.get_json()
-        flight_id: int = Flight.create(session=sess_id, **data).id
-        response = jsonify()
-        response.status_code = 201
+        flight: dict = model_to_dict(
+            Flight.create(session=sess_id, **data), recurse=False)
+        response = jsonify(flight)
+        response.status_code = 200
         response.headers[
-            'location'] = '/api/v1/sessions/<sess_id>/flights/' + str(flight_id)
+            'location'] = '/api/v1/sessions/<sess_id>/flights/' + str(
+                flight["id"])
         return response
     except Exception as e:
         logger.error("ERROR: %s", str(e))
