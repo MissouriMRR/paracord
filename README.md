@@ -41,14 +41,19 @@ Now on your mobile device, install the Expo app for your platform and scan the Q
 ### Server
 In the `api` folder, run the following commands:
 
-1. Build and generate all necessary servers and databases
+1. Copy the docker environment variable template
+```bash
+$ cp .docker/web.env.template .docker/web.env
+```
+
+2. Build and generate all necessary servers and databases
 ```bash
 
 $ docker-compose up
 
 ```
-2. Use Ctrl-C to close the session
-3. Restart the container
+3. Use Ctrl-C to close the session
+4. Restart the command
 ```bash
 
 $ docker-compose up
