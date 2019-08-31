@@ -26,7 +26,7 @@ export default class SessionsScreen extends React.Component {
 			.then(json => this.setState({ sessions: json }))
 			.catch(reason => Alert.alert(
 				'Error',
-				`There was an error connecting to the database\n${reason}`,
+				'There was an error connecting to the database\n' + reason,
 				[{ text: 'OK' }],
 				{ cancelable: false }))
 		this.setState({ refreshing: false })
@@ -39,9 +39,9 @@ export default class SessionsScreen extends React.Component {
 					refreshing={this.state.refreshing}
 					onRefresh={() => { this.refresh_sessions() }}
 					data={this.state.sessions /* TODO display something when there are no sessions available */}
-					keyExtractor={item => `${item.id}`}
+					keyExtractor={item => String(item.id)}
 					renderItem={({ item }) => (
-						<ListItem onPress={event => { /* TODO navigate to session screen */ }}>
+						<ListItem onPress={() => { this.props.navigation.navigate('Flights', { session_id: item.id }) }}>
 							<Left>
 								<Text>{item.start_time}</Text>
 							</Left>
