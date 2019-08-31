@@ -14,7 +14,7 @@ import {
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: "Past Flights"
+    title: "Flights"
   };
 
   render() {

@@ -6,8 +6,8 @@ import {
 } from "react-navigation";
 
 import TabBarIcon from "../components/TabBarIcon";
-import PreflightScreen from "../screens/AddSessionScreen/PreflightScreen";
-import FlightsScreen from "../screens/AddSessionScreen/FlightsScreen";
+import PreflightScreen from "../screens/PreflightScreen";
+import FlightsScreen from "../screens/FlightsScreen";
 
 const PreflightStack = createStackNavigator({
   Preflight: PreflightScreen

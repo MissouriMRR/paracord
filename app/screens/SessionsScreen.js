@@ -1,7 +1,7 @@
-import { Container, Content, Icon, Left, ListItem, Right, Text, Item } from "native-base";
+import { Icon, Left, ListItem, Right, Text, View } from "native-base";
 import React from "react";
-import Network from "../constants/Network.js"
-import { FlatList, StyleSheet, Alert } from "react-native";
+import { Alert, FlatList } from "react-native";
+import Network from "../constants/Network.js";
 
 export default class SessionsScreen extends React.Component {
 	static navigationOptions = {
@@ -10,41 +10,49 @@ export default class SessionsScreen extends React.Component {
 
 	constructor(props) {
 		super(props)
-		this.state = { sessions: [] }
-		fetch(Network.URL_BASE + "sessions/")
+		this.state = { sessions: [], refreshing: false }
+	}
+
+	componentDidMount() {
+		this.refresh_sessions()
+	}
+
+	async refresh_sessions() {
+		if (this.state.refreshing)
+			return
+		this.setState({ refreshing: true })
+		await fetch(Network.URL_BASE + "sessions/")
 			.then(response => response.json())
 			.then(json => this.setState({ sessions: json }))
 			.catch(reason => Alert.alert(
 				'Error',
 				`There was an error connecting to the database\n${reason}`,
-				[{
-					text: 'OK',
-					onPress: () => { }
-				}],
+				[{ text: 'OK' }],
 				{ cancelable: false }))
+		this.setState({ refreshing: false })
 	}
 
 	render() {
 		return (
-			<Container>
-				<Content>
-					<FlatList
-						data={this.state.sessions}
-						keyExtractor={item => `${item.id}`}
-						renderItem={({ item }) => (
-							<ListItem onPress={event => { /* TODO navigate to session screen */ }}>
-								<Left>
-									<Text>{item.start_time}</Text>
-								</Left>
-								<Right>
-									<Icon name="arrow-forward" />
-								</Right>
-							</ListItem>
-						)}
-					/>
-					{ /* TODO floating action button for new session */ }
-				</Content>
-			</Container>
+			<View>
+				<FlatList /* Maybe split these up by month? */
+					refreshing={this.state.refreshing}
+					onRefresh={() => { this.refresh_sessions() }}
+					data={this.state.sessions /* TODO display something when there are no sessions available */}
+					keyExtractor={item => `${item.id}`}
+					renderItem={({ item }) => (
+						<ListItem onPress={event => { /* TODO navigate to session screen */ }}>
+							<Left>
+								<Text>{item.start_time}</Text>
+							</Left>
+							<Right>
+								<Icon name="arrow-forward" />
+							</Right>
+						</ListItem>
+					)}
+				/>
+			</View>
+			// TODO floating action button for new session
 		)
 	}
 }

@@ -1,6 +1,6 @@
 import { Left, ListItem, Right, View, Picker } from "native-base";
 import React from "react";
-import Network from "../../constants/Network.js"
+import Network from "../constants/Network.js"
 import { Alert, Button, FlatList, StyleSheet, Switch, Text, TextInput } from "react-native";
 
 const post_session = (values) => {
@@ -19,10 +19,7 @@ const post_session = (values) => {
 	}).catch(reason => Alert.alert(
 		'Error',
 		`There was an error creating the session\n${reason}`,
-		[{
-			text: 'OK',
-			onPress: () => { },
-		}],
+		[{ text: 'OK' }],
 		{ cancelable: false }
 	))
 }

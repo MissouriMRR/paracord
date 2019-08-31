@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import AddSessionNavigator from "../../navigation/AddSessionNavigator";
+import AddSessionNavigator from "../navigation/AddSessionNavigator";
 
 export default class AddSessionScreen extends React.Component {
   static navigationOptions = {
