@@ -20,9 +20,11 @@ Install:
 * Docker
 * Docker Compose
 
-Information about how to install for your platform can be found [here](https://docs.docker.com/install/).
+Information about how to install for your platform can be found [here](https://docs.docker.com/install/).  
 
-On Windows and MacOS you will need to install Docker Desktop.
+Docker is supported on Linux by default. On Windows 10 Pro and MacOS you will need to install Docker Desktop.  
+You can download Docker Desktop from [Docker Hub](https://www.docker.com/products/docker-desktop) or [directly](https://download.docker.com/).  
+If you have a version of Windows that does not support Hyper-V, use [Docker Toolbox](https://docs.docker.com/toolbox/toolbox_install_windows/) instead. [download here](https://github.com/docker/toolbox/releases).  
 
 ## Usage
 
@@ -38,21 +40,26 @@ Now on your mobile device, install the Expo app for your platform and scan the Q
 ### Server
 In the `api` folder, run the following commands:
 
-1. Build and generate all necessary servers and databases
+1. Copy the docker environment variable template
+```bash
+$ cp .docker/web.env.template .docker/web.env
+```
+
+2. Build and generate all necessary servers and databases
 ```bash
 
 $ docker-compose up
 
 ```
-2. Use Ctrl-C to close the session
-3. Restart the container
+3. Use Ctrl-C to close the session
+4. Restart the command
 ```bash
 
 $ docker-compose up
 
 ```
 
-You can now navigate to [http://localhost/api/v1/flights](http://localhost/api/v1/flights)
+You can now navigate to [http://localhost/api/v1/sessions](http://localhost/api/v1/sessions)
 
 ## How to contribute
 1. First make sure you are on the up to date `develop` branch.

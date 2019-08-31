@@ -1,10 +1,10 @@
 import logging
-from typing import List
+from typing import Any, List
 
 from flask import Blueprint, jsonify, request
-from playhouse.shortcuts import model_to_dict
 
 from paracord.models import AirFrame
+from playhouse.shortcuts import model_to_dict
 
 logger = logging.getLogger(__name__)
 
@@ -29,10 +29,10 @@ def list_all_frames():
 def create_frame():
     try:
         data: dict = request.get_json()
-        frame_id: int = AirFrame.create(**data).id
-        response = jsonify()
-        response.status_code = 201
-        response.headers['location'] = '/api/v1/frames/' + str(frame_id)
+        frame: dict = model_to_dict(AirFrame.create(**data))
+        response: Any = jsonify(frame)
+        response.status_code = 200
+        response.headers['location'] = '/api/v1/frames/' + str(frame["id"])
         return response
     except Exception as e:
         logger.error("ERROR: %s", str(e))
