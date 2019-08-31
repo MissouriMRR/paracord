@@ -20,12 +20,11 @@ Install:
 * Docker
 * Docker Compose
 
-Information about how to install for your platform can be found [here](https://docs.docker.com/install/).
+Information about how to install for your platform can be found [here](https://docs.docker.com/install/).  
 
-If you're not running Linux, good luck.
-On Windows (Enterprise or Pro Edition) and MacOS you will need to install Docker Desktop.
-Docker Desktop is not supported on Windows 10 Home Edition. 
-You can use [Docker Toolbox](https://docs.docker.com/toolbox/toolbox_install_windows/) instead.
+Docker is supported on Linux by default. On Windows 10 Pro and MacOS you will need to install Docker Desktop.  
+You can download Docker Desktop from [Docker Hub](https://www.docker.com/products/docker-desktop) or [directly](https://download.docker.com/).  
+If you have a version of Windows that does not support Hyper-V, use [Docker Toolbox](https://docs.docker.com/toolbox/toolbox_install_windows/) instead. [download here](https://github.com/docker/toolbox/releases).  
 
 ## Usage
 
