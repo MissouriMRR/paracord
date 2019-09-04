@@ -1,6 +1,6 @@
 import { Icon, Left, ListItem, Right, Text, View } from "native-base";
 import React from "react";
-import { Alert, FlatList } from "react-native";
+import { Alert, FlatList, Button } from "react-native";
 import Network from "../constants/Network.js";
 
 export default class HomeScreen extends React.Component {
@@ -34,8 +34,9 @@ export default class HomeScreen extends React.Component {
 
 	render() {
 		return (
-			<View>
+			<View style={{ flex: 1 }}>
 				<FlatList
+					style={{ flex: 1 }}
 					refreshing={this.state.refreshing}
 					onRefresh={() => { this.refresh_flights() }}
 					data={this.state.flights /* TODO display something when there are no flights available */}
@@ -51,8 +52,11 @@ export default class HomeScreen extends React.Component {
 						</ListItem>
 					)}
 				/>
+				<Button
+					title='New Flight'
+					onPress={() => { this.props.navigation.navigate('NewFlight') }}
+				/>
 			</View>
-			// TODO floating action button for new flight
 		)
 	}
 }

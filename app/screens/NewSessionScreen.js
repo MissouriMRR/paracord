@@ -3,30 +3,11 @@ import React from "react";
 import Network from "../constants/Network.js"
 import { Alert, Button, FlatList, StyleSheet, Switch, Text, TextInput } from "react-native";
 
-const post_session = (values) => {
-	let body = {}
-	values.forEach(val => body[val.key] = val.value)
 
-	console.log(`sending POST:${JSON.stringify(body)} to ${URL_BASE}sessions/`)
-
-	fetch(Network.URL_BASE + "sessions/", {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify(body)
-	}).then(response => {
-		//TODO
-		console.log("HTTP POST RESPONSE::" + response.toString())
-	}).catch(reason => Alert.alert(
-		'Error',
-		`There was an error creating the session\n${reason}`,
-		[{ text: 'OK' }],
-		{ cancelable: false }
-	))
-}
 
 export default class HomeScreen extends React.Component {
 	static navigationOptions = {
-		header: null
+		title: "New Session"
 	}
 
 	constructor(props) {
@@ -73,11 +54,26 @@ export default class HomeScreen extends React.Component {
 			.then(json => this.state.inputValues.find(a => a.key == 'air_frame').options = json)
 			.catch(reason => Alert.alert(
 				'Error',
-				`There was an error connecting to the dataabase\n${reason}`,
-				[{
-					text: 'OK',
-					onPress: () => { },
-				}],
+				'There was an error connecting to the database\n' + reason,
+				[{ text: 'OK' }],
+				{ cancelable: false }))
+	}
+
+	post_session(params) {
+		let body = {}
+		params.forEach(item => body[item.key] = item.value)
+
+		fetch(Network.URL_BASE + "sessions/", {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(body)
+		})
+			.then(response => response.json())
+			.then(json => this.props.navigation.replace("Flights", { session_id: json.id }))
+			.catch(reason => Alert.alert(
+				'Error',
+				'There was an error creating the session\n' + reason,
+				[{ text: 'OK' }],
 				{ cancelable: false }))
 	}
 
@@ -114,8 +110,6 @@ export default class HomeScreen extends React.Component {
 											let values = [...this.state.inputValues]
 											values[index] = { ...values[index], value: value }
 											this.setState({ inputValues: values })
-											console.log(this.state.inputValues[index].options)
-											console.log(value)
 										}}>
 										<Picker.Item label='Please Select' value={-1} />
 										{this.state.inputValues[index].options.map(option => <Picker.Item key={option.id} label={option.name} value={option.id} />)}
@@ -133,12 +127,11 @@ export default class HomeScreen extends React.Component {
 						'Are you ready to fly?',
 						[{
 							text: 'Cancel',
-							onPress: () => { },
 							style: 'cancel',
 						},
 						{
 							text: 'OK',
-							onPress: () => post_session(this.state.inputValues),
+							onPress: () => this.post_session(this.state.inputValues),
 						}],
 						{ cancelable: false },
 					)}
@@ -148,22 +141,6 @@ export default class HomeScreen extends React.Component {
 	}
 }
 
-
-
-
-/*
-for i in range(NUM_FLIGHTS):
-    resp = requests.post(
-        URL_BASE + "sessions/" + str(i % NUM_SESSIONS) + "/flights",
-        json={
-            "start_time": str(datetime.now()),
-            "end_time":
-            str(datetime.now() + timedelta(minutes=randint(1, 30))),
-            "description": " ".join([rword() for _ in range(randint(6, 30))]),
-            "success": True,
-            "outcome": " ".join([rword() for _ in range(randint(6, 17))])
-        })
-*/
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,

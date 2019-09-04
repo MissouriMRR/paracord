@@ -1,6 +1,6 @@
 import { Icon, Left, ListItem, Right, Text, View } from "native-base";
 import React from "react";
-import { Alert, FlatList } from "react-native";
+import { Alert, Button, FlatList } from "react-native";
 import Network from "../constants/Network.js";
 
 export default class SessionsScreen extends React.Component {
@@ -34,8 +34,9 @@ export default class SessionsScreen extends React.Component {
 
 	render() {
 		return (
-			<View>
+			<View style={{ flex: 1 }}>
 				<FlatList /* Maybe split these up by month? */
+					style={{ flex: 1 }}
 					refreshing={this.state.refreshing}
 					onRefresh={() => { this.refresh_sessions() }}
 					data={this.state.sessions /* TODO display something when there are no sessions available */}
@@ -51,8 +52,12 @@ export default class SessionsScreen extends React.Component {
 						</ListItem>
 					)}
 				/>
+				<Button
+					title='New Session'
+					onPress={() => { this.props.navigation.navigate('NewSession') }}
+				/>
 			</View>
-			// TODO floating action button for new session
 		)
 	}
 }
+

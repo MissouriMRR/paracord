@@ -36,7 +36,7 @@ export default class HomeScreen extends React.Component {
 	render() {
 		return (
 			<View>
-				<Text>{/* TODO */ JSON.stringify(this.state.flight_details)}</Text>
+				<Text>{/* TODO make pretty */ JSON.stringify(this.state.flight_details)}</Text>
 			</View>
 			// TODO edit button
 		)
