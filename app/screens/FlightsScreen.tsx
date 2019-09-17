@@ -1,14 +1,19 @@
 import { Icon, Left, ListItem, Right, Text, View } from "native-base";
 import React from "react";
-import { Alert, FlatList, Button } from "react-native";
-import Network from "../constants/Network.js";
+import { Button, FlatList, Alert } from "react-native";
+import { NavigationInjectedProps, NavigationParams } from "react-navigation";
+import { Network } from "../constants/Network";
+import { Styles } from "../constants/Styles";
 
-export default class HomeScreen extends React.Component {
+type Flight = { id: number, start_time: string }
+type State = { flights: Array<Flight>, refreshing: boolean }
+
+export class FlightsScreen extends React.Component<NavigationInjectedProps, State> {
 	static navigationOptions = {
 		title: "Flights"
-	};
+	}
 
-	constructor(props) {
+	constructor(props: Readonly<NavigationInjectedProps<NavigationParams>>) {
 		super(props)
 		this.state = { flights: [], refreshing: false }
 	}
@@ -22,11 +27,11 @@ export default class HomeScreen extends React.Component {
 			return
 		this.setState({ refreshing: true })
 		await fetch(Network.URL_BASE + "sessions/" + this.props.navigation.getParam('session_id') + "/flights")
-			.then(response => response.json())
-			.then(json => this.setState({ flights: json }))
+			.then(response => response.json(), Network.onError)
+			.then(json => this.setState({ flights: json as Array<Flight> })) // TODO don't error when no flights are available 
 			.catch(reason => Alert.alert(
-				'Error',
-				'There was an error connecting to the database\n' + reason,
+				'A JSON Error Has Occured',
+				reason.toString(),
 				[{ text: 'OK' }],
 				{ cancelable: false }))
 		this.setState({ refreshing: false })
@@ -34,9 +39,9 @@ export default class HomeScreen extends React.Component {
 
 	render() {
 		return (
-			<View style={{ flex: 1 }}>
+			<View style={Styles.container}>
 				<FlatList
-					style={{ flex: 1 }}
+					style={Styles.list}
 					refreshing={this.state.refreshing}
 					onRefresh={() => { this.refresh_flights() }}
 					data={this.state.flights /* TODO display something when there are no flights available */}

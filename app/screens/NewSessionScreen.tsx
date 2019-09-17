@@ -1,16 +1,27 @@
-import { Left, ListItem, Right, View, Picker } from "native-base";
+import { Left, ListItem, Picker, Right, View } from "native-base";
 import React from "react";
-import Network from "../constants/Network.js"
 import { Alert, Button, FlatList, StyleSheet, Switch, Text, TextInput } from "react-native";
+import { NavigationInjectedProps, NavigationParams } from "react-navigation";
+import { Network } from "../constants/Network";
+import { Styles as _Styles } from "../constants/Styles";
+
+// TODO rewrite this hot garbo
+
+type AirFrame = { id: number, name: string }
+
+type TextInputData = { key: string, name: string, type: 'text', value: string, required: boolean }
+type PickerInputData<ItemT> = { key: string, name: string, type: 'picker', options: Array<ItemT>, value: number, required: boolean }
+type SwitchInputData = { key: string, name: string, type: 'switch', value: boolean, required: boolean }
+
+type State = { inputValues: Array<TextInputData | PickerInputData<AirFrame> | SwitchInputData> }
 
 
-
-export default class HomeScreen extends React.Component {
+export class NewSessionScreen extends React.Component<NavigationInjectedProps, State> {
 	static navigationOptions = {
 		title: "New Session"
 	}
 
-	constructor(props) {
+	constructor(props: Readonly<NavigationInjectedProps<NavigationParams>>) {
 		super(props)
 		this.state = {
 			inputValues: [
@@ -51,16 +62,16 @@ export default class HomeScreen extends React.Component {
 		}
 		fetch(Network.URL_BASE + "frames/")
 			.then(response => response.json())
-			.then(json => this.state.inputValues.find(a => a.key == 'air_frame').options = json)
+			.then(json => (this.state.inputValues.find(a => a.key == 'air_frame') as PickerInputData<AirFrame>).options = json as Array<AirFrame>, Network.onError)
 			.catch(reason => Alert.alert(
-				'Error',
-				'There was an error connecting to the database\n' + reason,
+				'A JSON Error Has Occured',
+				reason.toString(),
 				[{ text: 'OK' }],
 				{ cancelable: false }))
 	}
 
-	post_session(params) {
-		let body = {}
+	post_session(params: (TextInputData | PickerInputData<AirFrame> | SwitchInputData)[]) {
+		let body: {[key: string]: (typeof params[number])['value']} = {}
 		params.forEach(item => body[item.key] = item.value)
 
 		fetch(Network.URL_BASE + "sessions/", {
@@ -68,7 +79,7 @@ export default class HomeScreen extends React.Component {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(body)
 		})
-			.then(response => response.json())
+			.then(response => response.json(), Network.onError)
 			.then(json => this.props.navigation.replace("Flights", { session_id: json.id }))
 			.catch(reason => Alert.alert(
 				'Error',
@@ -79,7 +90,7 @@ export default class HomeScreen extends React.Component {
 
 	render() {
 		return (
-			<View style={styles.container}>
+			<View style={Styles.container}>
 				<FlatList
 					data={this.state.inputValues}
 					renderItem={({ item, index }) => (
@@ -88,31 +99,31 @@ export default class HomeScreen extends React.Component {
 							{
 								item.type == 'switch' && (
 									<Right>
-										<Switch value={this.state.inputValues[index].value}
-											onValueChange={value => {
+										<Switch value={item.value}
+											onValueChange={newValue => {
 												let values = [...this.state.inputValues]
-												values[index] = { ...values[index], value: value }
+												values[index] = { ...values[index], value: newValue } as TextInputData | PickerInputData<AirFrame> | SwitchInputData
 												this.setState({ inputValues: values })
 											}} />
 									</Right>
 								) || item.type == 'text' && (
-									<TextInput value={this.state.inputValues[index].value}
-										style={styles.textInput}
+									<TextInput value={item.value}
+										style={Styles.textInput}
 										onChangeText={text => {
 											let values = [...this.state.inputValues]
-											values[index] = { ...values[index], value: text }
+											values[index] = { ...values[index], value: text } as TextInputData | PickerInputData<AirFrame> | SwitchInputData
 											this.setState({ inputValues: values })
 										}} />
 								) || item.type == 'picker' && (
 									<Picker prompt={item.name}
-										selectedValue={this.state.inputValues[index].value}
+										selectedValue={item.value}
 										onValueChange={value => {
 											let values = [...this.state.inputValues]
-											values[index] = { ...values[index], value: value }
+											values[index] = { ...values[index], value: value } as TextInputData | PickerInputData<AirFrame> | SwitchInputData
 											this.setState({ inputValues: values })
 										}}>
 										<Picker.Item label='Please Select' value={-1} />
-										{this.state.inputValues[index].options.map(option => <Picker.Item key={option.id} label={option.name} value={option.id} />)}
+										{item.options.map(option => <Picker.Item key={option.id} label={option.name} value={option.id} />)}
 									</Picker>
 								)
 							}
@@ -141,13 +152,11 @@ export default class HomeScreen extends React.Component {
 	}
 }
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#fff"
-	},
+const Styles = StyleSheet.create({
+	..._Styles,
 	textInput: {
 		textAlign: 'right',
 		flex: 1
 	}
 })
+
