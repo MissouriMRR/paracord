@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "prestart": "tsc",
+    "start": "node ./bin/index.js"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.1",
+    "@types/node": "^12.7.7",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "main": "bin/index.js",
+  "private": true
+}
