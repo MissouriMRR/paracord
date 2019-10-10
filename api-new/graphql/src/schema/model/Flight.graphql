@@ -1,0 +1,12 @@
+type Flight {
+    id: Int
+    description: String
+    location: String
+    terrain: String
+    weather: String
+    date: String
+}
+
+
+
+ 
