@@ -1,0 +1,17 @@
+{
+  "tags": [
+    "vesper",
+    "vesper-typescript-server"
+  ],
+  "dependencies": {
+    "vesper": "^0.1.0",
+    "sqlite3": "^4.0.0"
+  },
+  "scripts": {
+    "compile": "tsc",
+    "start": "npm run compile && node ./src/index.js"
+  },
+  "devDependencies": {
+    "typescript": "^2.7.2"
+  }
+}

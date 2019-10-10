@@ -1,0 +1,4 @@
+type Drone {
+    id: Int
+    name: String
+}
