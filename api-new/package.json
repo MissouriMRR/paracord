@@ -12,5 +12,8 @@
     "express": "^4.17.1"
   },
   "main": "bin/index.js",
-  "private": true
+  "private": true,
+  "engines": {
+    "yarn": "YARN NO LONGER USED - use npm instead."
+  }
 }
