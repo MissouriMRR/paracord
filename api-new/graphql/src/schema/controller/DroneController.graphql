@@ -1,9 +1,0 @@
-type Query {
-    drones: [Drone]
-    drone(id: Int): Drone
-}
-
-type Mutation {
-    droneSave(id: Int, name: String): Drone
-    droneDelete(id: Int): Boolean
-}

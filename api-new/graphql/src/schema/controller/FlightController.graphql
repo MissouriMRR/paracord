@@ -1,9 +1,0 @@
-type Query {
-    flights: [Flight]
-    Flight(id: Int): Flight
-}
-
-type Mutation {
-    flightSave(id: Int, description: String, location: String, terrain: String, weather: String, date: String): Flight
-    flightDelete(id: Int): Boolean
-}
