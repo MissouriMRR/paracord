@@ -1,41 +1,34 @@
-import "reflect-metadata"
-import * as TypeORM from "typeorm";
-import * as TypeGraphQL from "type-graphql";
-
-import {DroneResolver} from "./drone-resolver";
-import {Drone} from "./drone";
 import { ApolloServer } from 'apollo-server-express';
-
-import express from 'express';
-const graphqlHTTP = require('express-graphql');
-import { createServer } from 'http';
 import cors from 'cors';
+import express from 'express';
+import { createServer } from 'http';
+import "reflect-metadata";
+import { buildSchema } from "type-graphql";
+import { createConnection } from "typeorm";
+import { DroneResolver } from "./drone-resolver";
 
+const port = 3000
 
-async function bootstrap() {
-    try {
-        await TypeORM.createConnection();
+console.log('Connecting to database')
+createConnection().then(async connection => {
 
-        const schema = await TypeGraphQL.buildSchema({
-            resolvers: [DroneResolver]
-        });
+	console.log('Building schemas')
+	const gqlschema = await buildSchema({ resolvers: [DroneResolver] });
 
-        const app = express();
-        const server = new ApolloServer({
-            schema
-        });
+	console.log('Creating express app')
+	const app = express();
+	app.use('*', cors());
 
-        app.use('*', cors());
-        
-        server.applyMiddleware({ app, path: '/graphql' });
-        const httpServer = createServer(app);
-        httpServer.listen(
-            { port: 3000 },
-            (): void => console.log(`\n🚀      GraphQL is now running on http://localhost:3000/graphql`)
-        );
-    } catch (err) {
-        console.error(err);
-    }
-}
+	console.log('Initializing server')
+	const server = new ApolloServer({ schema: gqlschema });
+	server.applyMiddleware({ app, path: '/graphql' });
 
-bootstrap();
+	console.log('Starting http server')
+	const httpServer = createServer(app);
+	httpServer.listen({ port: port })
+
+}).catch((error: any) => {
+	console.error(error)
+	if (String(error).includes('ECONNREFUSED'))
+		console.error('try changing `hostname` in `ormconfig.json`')
+})
