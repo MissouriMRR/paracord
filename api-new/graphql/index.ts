@@ -29,6 +29,4 @@ createConnection().then(async connection => {
 
 }).catch((error: any) => {
 	console.error(error)
-	if (String(error).includes('ECONNREFUSED'))
-		console.error('try changing `hostname` in `ormconfig.json`')
 })
