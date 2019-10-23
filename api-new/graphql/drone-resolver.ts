@@ -1,20 +1,15 @@
 
 import { Query, Resolver } from "type-graphql";
-import { Repository } from "typeorm";
+import { Repository, getRepository} from "typeorm";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Drone } from "./drone";
 
 
-@Resolver(of => Drone)
+@Resolver(() => Drone)
 export class DroneResolver {
-	constructor(
-		@InjectRepository(Drone)
-		private droneRepository: Repository<Drone>
-	) { }
-
-	@Query(returns => [Drone])
-	drones(): Promise<Drone[]> {
-		return this.droneRepository.find(); // TODO 
+	public repository: Repository<Drone> = getRepository(Drone); 
+	@Query(() => [Drone])
+	protected async drones(): Promise<Drone[]> {
+		return this.repository.find(); // TODO 
 	}
-
 }
