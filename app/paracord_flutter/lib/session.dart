@@ -173,7 +173,7 @@ class _NewSessionPageState extends State<NewSessionPage> {
   final _purposeController = TextEditingController();
   final _locationController = TextEditingController();
 
-  String _droneValue;
+  int _droneValue;
 
   @override
   void initState() {
@@ -218,7 +218,7 @@ class _NewSessionPageState extends State<NewSessionPage> {
               title: InputDecorator(
                 isEmpty: _droneValue == null, // TODO _session.drone
                 decoration: InputDecoration(labelText: 'Drone'),
-                child: DropdownButton(
+                child: DropdownButton<int>(
                   isDense: true,
                   value: _droneValue,
                   onChanged: (newValue) {
@@ -230,11 +230,11 @@ class _NewSessionPageState extends State<NewSessionPage> {
                   },
                   items: [
                     DropdownMenuItem(
-                      value: 'lorem',
+                      value: 1,
                       child: Text('lorem'),
                     ),
                     DropdownMenuItem(
-                      value: 'ipsum',
+                      value: 2,
                       child: Text('ipsum'),
                     )
                   ],
