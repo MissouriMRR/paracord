@@ -23,7 +23,7 @@ export class DroneResolver {
 		return drone.save();
 	}
 	
-	@Mutation(() => Drone)
+	@Mutation(() => Boolean)
 	protected async deleteDroneByID(
 		@Arg("id", () => Int) id: number
 	): Promise<boolean> {
