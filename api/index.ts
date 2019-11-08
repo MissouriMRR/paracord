@@ -6,14 +6,14 @@ import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { DroneResolver } from "./drone-resolver";
-
+import { Drone } from "./drone"
 const port = 3000
 
 console.log('Connecting to database')
 createConnection().then(async connection => {
 
 	console.log('Building schemas')
-	const gqlschema = await buildSchema({ resolvers: [DroneResolver] });
+	const gqlschema = await buildSchema({ resolvers: [DroneResolver]});
 
 	console.log('Creating express app')
 	const app = express();
@@ -29,6 +29,4 @@ createConnection().then(async connection => {
 
 }).catch((error: any) => {
 	console.error(error)
-	if (String(error).includes('ECONNREFUSED'))
-		console.error('try changing `hostname` in `ormconfig.json`')
 })
