@@ -43,8 +43,8 @@ $ docker-compose up --build
 $ docker-compose up
 ```
 
-You can now navigate to [http://localhost/graphql]\*  
-\* If you're using Docker Toolbox you can connect either using Kitematic or at [192.168.99.100/graphql]
+You can now navigate to [http://localhost/graphql](http://localhost/graphql)  
+If you're using Docker Toolbox you can connect either using Kitematic or at [192.168.99.100/graphql](192.168.99.100/graphql)
 
 ## How to contribute
 1. First make sure you are on the up to date `develop` branch.
