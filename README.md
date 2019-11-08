@@ -5,61 +5,46 @@ Paracord is a cross-platform app designed by and for Missouri S&T's Multirotor R
 ## Installation
 
 ### App
-
 Requirements:
-* [Node.js](https://nodejs.org/en/)
-* [yarn](https://yarnpkg.com/en/)
-* **Expo\***
-
-**\*** The app is written using Expo. Installation instructions can be found on the [Expo Documentation](https://docs.expo.io/versions/latest/introduction/installation/).
+* [Flutter](https://flutter.dev/docs/get-started/install)
 
 ### API
 This can be run on any modern computer
 
-Install:
+Requirements:
+* [Node.js](https://nodejs.org/en/)
 * Docker
 * Docker Compose
 
-Information about how to install for your platform can be found [here](https://docs.docker.com/install/).  
+Information about how to install docker for your platform can be found [here](https://docs.docker.com/install/).  
 
-Docker is supported on Linux by default. On Windows 10 Pro and MacOS you will need to install Docker Desktop.  
+Docker is supported on Linux by default using your preferred package manager. On Windows 10 Pro and MacOS you will need to install Docker Desktop.  
 You can download Docker Desktop from [Docker Hub](https://www.docker.com/products/docker-desktop) or [directly](https://download.docker.com/).  
 If you have a version of Windows that does not support Hyper-V, use [Docker Toolbox](https://docs.docker.com/toolbox/toolbox_install_windows/) instead. [download here](https://github.com/docker/toolbox/releases).  
 
 ## Usage
 
 ### App
-In the `app` folder, run the following command:
 
-```bash
-$ yarn start
-```
-
-Now on your mobile device, install the Expo app for your platform and scan the QR code to run the app live.
+The app can be run on any compatible android or iOS device directly from your IDE.  
+For more information on your platform, follow the instuctions on [Flutter Docs](https://flutter.dev/docs/get-started/).  
+Be sure to check out Material Design's [Flutter tutorials](https://material.io/collections/developer-tutorials/#flutter) if you need help getting started!
 
 ### Server
 In the `api` folder, run the following commands:
 
-1. Copy the docker environment variable template
+1. Build all necessary files and databases
 ```bash
-$ cp .docker/web.env.template .docker/web.env
-```
-
-2. Build and generate all necessary servers and databases
-```bash
-
-$ docker-compose up
-
+$ docker-compose up --build
 ```
 3. Use Ctrl-C to close the session
-4. Restart the command
+4. Start the docker containers
 ```bash
-
 $ docker-compose up
-
 ```
 
-You can now navigate to [http://localhost/api/v1/sessions](http://localhost/api/v1/sessions)
+You can now navigate to [http://localhost/graphql]\*  
+\* If you're using Docker Toolbox you can connect either using Kitematic or at [192.168.99.100/graphql]
 
 ## How to contribute
 1. First make sure you are on the up to date `develop` branch.
