@@ -18,7 +18,8 @@ Requirements:
 
 Information about how to install docker for your platform can be found [here](https://docs.docker.com/install/).  
 
-Docker is supported on Linux by default using your preferred package manager. On Windows 10 Pro and MacOS you will need to install Docker Desktop.  
+Docker is supported on Linux by default using your preferred package manager.  
+On Windows 10 Pro and MacOS you will need to install Docker Desktop.  
 You can download Docker Desktop from [Docker Hub](https://www.docker.com/products/docker-desktop) or [directly](https://download.docker.com/).  
 If you have a version of Windows that does not support Hyper-V, use [Docker Toolbox](https://docs.docker.com/toolbox/toolbox_install_windows/) instead. [download here](https://github.com/docker/toolbox/releases).  
 
@@ -44,7 +45,7 @@ $ docker-compose up
 ```
 
 You can now navigate to [http://localhost/graphql](http://localhost/graphql)  
-If you're using Docker Toolbox you can connect either using Kitematic or at [192.168.99.100/graphql](192.168.99.100/graphql)
+If you're using Docker Toolbox you can connect either using Kitematic or at [192.168.99.100/graphql](http://192.168.99.100/graphql)
 
 ## How to contribute
 1. First make sure you are on the up to date `develop` branch.
