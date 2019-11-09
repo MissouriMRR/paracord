@@ -28,7 +28,7 @@ export class UserResolver {
 		return this.repository.findOneOrFail({
 			id: id
         });
-        //TODO: Handle error where user doesnt exist
+        //TODO
 	}
 
 	@Mutation(() => User)
