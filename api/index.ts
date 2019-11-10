@@ -8,6 +8,7 @@ import { createConnection } from "typeorm";
 import { DroneResolver } from "./drone-resolver";
 import { OrganizationResolver } from "./organization-resolver";
 import { UserResolver } from './user-resolver';
+import { SessionResolver } from './session-resolver';
 
 const port = 3000
 
@@ -15,7 +16,7 @@ console.log('Connecting to database')
 createConnection().then(async connection => {
 
 	console.log('Building schemas')
-	const gqlschema = await buildSchema({ resolvers: [DroneResolver, OrganizationResolver, UserResolver]});
+	const gqlschema = await buildSchema({ resolvers: [DroneResolver, OrganizationResolver, UserResolver, SessionResolver]});
 
 	console.log('Creating express app')
 	const app = express();

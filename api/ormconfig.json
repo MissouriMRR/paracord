@@ -9,6 +9,7 @@
 	"entities": [
 		"./drone.js",
 		"./organization.js",
-		"./user.js"
+		"./user.js",
+		"./session.js"
 	]
 }
