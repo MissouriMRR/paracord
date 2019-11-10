@@ -1,4 +1,4 @@
-import { Query, Resolver, Mutation, Args, Arg, Int } from "type-graphql";
+import { Query, Resolver, Mutation, Args, Arg, Int, FieldResolver, Root } from "type-graphql";
 import { Repository, getRepository} from "typeorm";
 import { Organization } from "./organization";
 import { User } from "./user"
@@ -13,6 +13,23 @@ export class OrganizationResolver {
 		return this.orgRepo.find();
 	}
 
+	/* //TODO: figure out why this doesnt work
+	@FieldResolver()
+	users(@Root() org: Organization): Promise<User[]> {
+	  return this.userRepo.find({
+		cache: 1000,
+		where: { orgid : org.id },
+	  });
+	}
+	*/
+
+	@Query(() => [User])
+	protected async orgUsers(
+		@Arg("orgid", () => Int) orgid: number
+	): Promise<User[]> {
+		return this.userRepo.find({orgid : orgid});
+	}
+
 	@Mutation(() => Organization)
 	protected async createOrganization(
         @Arg("name", () => String) name: string 
@@ -21,17 +38,6 @@ export class OrganizationResolver {
 		return organization.save();
     }
     
-    @Mutation(() => Boolean)
-	protected async addUserToOrganization(
-        @Arg("userid", () => Int) userid: number,
-        @Arg("orgid", () => Int) orgid : number
-	): Promise<Boolean> {
-        const user = this.userRepo.findOneOrFail({ id: userid });
-        const org = this.orgRepo.findOneOrFail({ id: orgid });
-        
-        return true;
-	}
-	
 	@Mutation(() => Boolean)
 	protected async deleteOrganizationByID(
 		@Arg("id", () => Int) id: number
