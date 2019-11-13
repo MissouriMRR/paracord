@@ -14,7 +14,7 @@ export class Organization extends BaseEntity {
 	@Column()
 	name: string;
 
-    @Field(() => [ID])
-    @OneToMany(type => User, user => user.orgid)
+	@Field(type => [User])
+    @OneToMany(() => User, (user) => user.organization, { cascade: ["insert"] })
     users: User[];
 }
