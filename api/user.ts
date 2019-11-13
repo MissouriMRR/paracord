@@ -1,6 +1,8 @@
 
 import { Field, ID, ObjectType } from "type-graphql";
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne} from "typeorm";
+import { Organization } from "./organization";
+import { RelationColumn } from "./helpers";
 
 @ObjectType()
 @Entity()
@@ -9,15 +11,16 @@ export class User extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Field(() => ID)
-	//TODO: Relation shid
-	orgid: number;
-
 	@Field()
 	@Column()
 	email: string;
 
 	@Field()
 	@Column()
-	password: string;	
+	password: string;
+	
+	@ManyToOne(() => Organization)
+	organization: Organization;
+	@RelationColumn()
+	orgid: number;
 }
