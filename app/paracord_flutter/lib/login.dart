@@ -53,10 +53,14 @@ class _LoginPageState extends State<LoginPage> {
                       _passwordController.clear();
                     },
                   ),
+                  // FlatButton(
+                  //   child: Text('REGISTER'),
+                  //   onPressed: () {},
+                  // ),
                   RaisedButton(
                     child: Text('LOGIN'),
                     onPressed: () {
-                      // TODO login
+                      
                       Navigator.pop(context);
                     },
                   )

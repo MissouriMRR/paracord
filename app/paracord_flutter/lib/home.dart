@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:graphql/client.dart';
+import 'package:graphql/internal.dart';
+import 'package:paracord_flutter/graphQL.dart';
 import 'package:paracord_flutter/session.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,12 +12,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<Iterable<Session>> _sessions;
+  Stream<Iterable<Session>> _sessionStream;
+  ObservableQuery _sessionQuery;
 
   @override
   void initState() {
     super.initState();
-    _sessions = fetchSessions();
+    _sessionQuery = Session.watchSessions();
+    _sessionStream = _sessionQuery.stream.map<Iterable<Session>>((result) {
+      if (result.loading) return null;
+      return (result.data["sessions"] as Iterable)
+          .map((sessionData) => Session.fromMap(sessionData as Map));
+    });
+    _sessionQuery.fetchResults();
+    _sessionQuery.startPolling(10);
   }
 
   @override
@@ -74,34 +85,48 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildSessionList() {
-    return FutureBuilder<Iterable<Session>>(
-      future: _sessions,
+    return StreamBuilder<Iterable<Session>>(
+      stream: _sessionStream,
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return ListView.separated(
-            itemCount: snapshot.data.length,
-            itemBuilder: (context, index) => ListTile(
-              title: Text(
-                snapshot.data.elementAt(index).test_purpose,
-                maxLines: 1,
-                softWrap: false,
-                overflow: TextOverflow.ellipsis,
-              ),
-              subtitle: Text(snapshot.data.elementAt(index).start_time),
-              trailing: Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          SessionPage(session: snapshot.data.elementAt(index))),
-                );
-              },
-            ),
-            separatorBuilder: (context, index) => Divider(),
-          );
+        if (snapshot.hasError) {
+          return Text("Error: ${snapshot.error.toString()}");
         }
-        return CircularProgressIndicator();
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return CircularProgressIndicator();
+          case ConnectionState.active:
+            if(!snapshot.hasData)
+              return CircularProgressIndicator();
+            if (snapshot.data.isEmpty) {
+              return Text("No Sessions Available");
+            }
+            return ListView.separated(
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) => ListTile(
+                title: Text(
+                  snapshot.data.elementAt(index).purpose ?? "Untitled Session",
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Text(
+                    snapshot.data.elementAt(index).date?.toString() ??
+                        DateTime.fromMillisecondsSinceEpoch(0)),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SessionPage(
+                            session: snapshot.data.elementAt(index))),
+                  );
+                },
+              ),
+              separatorBuilder: (context, index) => Divider(),
+            );
+          default:
+            return Text("An Error has occured");
+        }
       },
     );
   }
