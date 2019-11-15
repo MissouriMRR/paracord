@@ -1,54 +1,62 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:graphql/client.dart';
+import 'package:graphql/internal.dart';
+import 'package:paracord_flutter/drone.dart';
 import 'package:paracord_flutter/flight.dart';
+import 'package:paracord_flutter/graphQL.dart';
 import 'package:paracord_flutter/transition.dart';
 
 class Session {
-  int id;
-  int air_frame;
-  String start_time;
-  String end_time;
-  String preparer;
-  String pilot;
-  String test_purpose;
-  String location;
+  static final String _queryName = "sessions";
+  static final String _queryArgs = "id,purpose,date,description";
+  static final String _queryDocument = "query{$_queryName{$_queryArgs}}";
+  static final String _mutationName = "createSession";
 
-  Session({
-    this.id,
-    this.air_frame,
-    this.preparer,
-    this.pilot,
-    this.test_purpose,
-    this.start_time,
-    this.end_time,
-    this.location,
-  });
-
-  factory Session.fromJson(Map<String, dynamic> json) {
-    return Session(
-      id: json['id'],
-      air_frame: json['air_frame'],
-      preparer: json['preparer'],
-      pilot: json['pilot'],
-      test_purpose: json['test_purpose'],
-      start_time: json['start_time'],
-    );
+  static Future<Session> postSession(Session session) async {
+    QueryResult result = await client.mutate(MutationOptionsWrapper(
+      mutationName: _mutationName,
+      queries: ["id", "date"],
+      variables: <String, dynamic>{
+        "purpose": session.purpose,
+        "description": session.description,
+      },
+    ).options);
+    if (result.hasErrors) throw result.errors;
+    session.id = result.data[_mutationName]['id'];
+    session.date = DateTime.parse(result.data[_mutationName]['date']);
+    return session;
   }
-}
 
-Future<Iterable<Session>> fetchSessions() async {
-  final response = await get('http://192.168.99.100/api/v1/sessions/');
-
-  if (response.statusCode == 200) {
-    // If server returns an OK response, parse the JSON.
-    return (List.from(json.decode(response.body))
-        .map<Session>((data) => Session.fromJson(data)));
-  } else {
-    // If that response was not OK, throw an error.
-    throw Exception('Failed to load post');
+  static Future<Iterable<Session>> fetchSessions() async {
+    QueryResult result =
+        await client.query(QueryOptions(document: _queryDocument));
+    if (result.hasErrors) throw result.errors;
+    return (result.data[_queryName] as Iterable)
+        .map((sessionData) => Session.fromMap(sessionData as Map));
   }
+
+  static ObservableQuery watchSessions() {
+    // TODO gql subscriptions
+    return client.watchQuery(WatchQueryOptions(document: _queryDocument));
+  }
+
+  String id;
+  String purpose;
+  DateTime date;
+  String description;
+  String droneId;
+
+  Session({this.id, this.purpose, this.date, this.description});
+
+  factory Session.fromMap(Map<String, dynamic> data) => Session(
+        id: data['id'],
+        purpose: data['purpose'],
+        date: DateTime.parse(data['date']),
+        description: data['description'],
+      );
+
+  /// true if all fields required to post are non-null
+  get validPost => purpose != null && description != null && droneId != null;
 }
 
 class SessionPage extends StatefulWidget {
@@ -84,8 +92,7 @@ class _SessionPageState extends State<SessionPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.session.test_purpose),
-        
+        title: Text(widget.session.purpose),
         bottom: TabBar(
           controller: _tabController,
           tabs: [
@@ -123,7 +130,24 @@ class _SessionPageState extends State<SessionPage>
   }
 
   Widget _buildDetailsTab() {
-    return Column(children: [Text(widget.session.toString())]);
+    return ListView(
+      children: <Widget>[
+        ListTile(
+          title: Text("Purpose"),
+          subtitle: Text(widget.session.purpose),
+        ),
+        Divider(),
+        ListTile(
+          title: Text("Description"),
+          subtitle: Text(widget.session.description),
+        ),
+        Divider(),
+        ListTile(
+          title: Text("Date"),
+          subtitle: Text(widget.session.date.toString()),
+        )
+      ],
+    );
   }
 
   Widget _buildFlightList() {
@@ -167,30 +191,37 @@ class NewSessionPage extends StatefulWidget {
 
 class _NewSessionPageState extends State<NewSessionPage> {
   Session _session;
+  Future<Iterable<Drone>> _drones;
 
   final _preparerController = TextEditingController();
   final _pilotController = TextEditingController();
   final _purposeController = TextEditingController();
   final _locationController = TextEditingController();
-
-  int _droneValue;
+  final _descriptionController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    _drones = Drone.fetchDrones();
     _session = Session();
-
+    /*
     _preparerController.addListener(() {
       _session.preparer = _preparerController.text;
     });
     _pilotController.addListener(() {
       _session.pilot = _pilotController.text;
     });
+    */
     _purposeController.addListener(() {
-      _session.test_purpose = _purposeController.text;
+      _session.purpose = _purposeController.text;
     });
+    /*
     _locationController.addListener(() {
       _session.location = _locationController.text;
+    });
+    */
+    _descriptionController.addListener(() {
+      _session.description = _descriptionController.text;
     });
   }
 
@@ -201,6 +232,7 @@ class _NewSessionPageState extends State<NewSessionPage> {
       body: DropdownButtonHideUnderline(
         child: ListView(
           children: <Widget>[
+            /*
             ListTile(
               title: TextField(
                 // TODO User.name
@@ -214,60 +246,74 @@ class _NewSessionPageState extends State<NewSessionPage> {
                 decoration: InputDecoration(labelText: 'Pilot'),
               ),
             ),
+            */
             ListTile(
               title: InputDecorator(
-                isEmpty: _droneValue == null, // TODO _session.drone
+                isEmpty: _session.droneId == null,
                 decoration: InputDecoration(labelText: 'Drone'),
-                child: DropdownButton<int>(
-                  isDense: true,
-                  value: _droneValue,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _droneValue = newValue;
-                      _session.air_frame =
-                          newValue; // TODO _session.drone = newValue;
-                    });
+                child: FutureBuilder<Iterable<Drone>>(
+                  future: _drones,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) return Text('Loading...');
+                    if (snapshot.data.isEmpty)
+                      return Text('No Drones Available');
+                    List<DropdownMenuItem<String>> droneItems =
+                        snapshot.requireData
+                            .map((drone) => DropdownMenuItem(
+                                  value: drone.id,
+                                  child: Text(drone.name),
+                                ))
+                            .toList();
+                    return DropdownButton<String>(
+                      isDense: true,
+                      value: _session.droneId,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _session.droneId = newValue;
+                        });
+                      },
+                      items: droneItems,
+                    );
                   },
-                  items: [
-                    DropdownMenuItem(
-                      value: 1,
-                      child: Text('lorem'),
-                    ),
-                    DropdownMenuItem(
-                      value: 2,
-                      child: Text('ipsum'),
-                    )
-                  ],
                 ),
               ),
             ),
             ListTile(
               title: TextField(
-                maxLines: null,
                 controller: _purposeController,
                 decoration: InputDecoration(labelText: 'Purpose'),
               ),
             ),
+            /*
             ListTile(
               title: TextField(
                 controller: _locationController,
                 decoration: InputDecoration(labelText: 'Location'),
               ),
             ),
+            */
+            ListTile(
+                title: TextField(
+              maxLines: null,
+              controller: _descriptionController,
+              decoration: InputDecoration(labelText: 'Description'),
+            ))
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: _session.validPost ? null : Colors.grey,
         child: Icon(Icons.save),
-        onPressed: () {
-          // TODO confirmation
-          // TODO post to database
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => SessionPage(session: _session)),
-          );
-        },
+        onPressed: _session.validPost
+            ? () async {
+                await Session.postSession(_session);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SessionPage(session: _session)),
+                );
+              }
+            : null,
       ),
     );
   }
