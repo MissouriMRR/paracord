@@ -10,7 +10,7 @@ export class UserResolver {
 
 	@Query(() => [User])
 	protected async users(): Promise<User[]> {
-		return this.userRepo.find()
+		return await this.userRepo.find()
 	}
 
 	@Query(() => User)
@@ -43,14 +43,27 @@ export class UserResolver {
 		})
 		return user.save()
 	}
+	//Nodemon
+	//Prettier with default
 
-	@Mutation(() => Boolean)
+	@Mutation(() => User)
 	protected async addUserToOrganization (
 		@Arg("userid", () => Int) userid: number,
 		@Arg("orgid", () => Int) orgid: number
-	): Promise<Boolean> {
-		const organization : Organization = await this.orgRepo.findOneOrFail({id: orgid})
+	): Promise<User> {
+		let organization : Organization = await this.orgRepo.findOneOrFail({id: orgid})
 		let user : User = await this.userRepo.findOneOrFail({id : userid})
+		let userOrgs : Organization[] = await user.organizations;
+		if(userOrgs) {
+			userOrgs.push(organization)
+		} else {
+			userOrgs = [organization]
+		} 
+		user.organizations = userOrgs
+		return user.save()
+		/*
+		const organization : Organization = await this.orgRepo.findOneOrFail({id: orgid})
+		
 		let user_organizations : Organization[] = user.organizations
 		
 		////////////////TODO figure out why this doesnt work
@@ -60,10 +73,10 @@ export class UserResolver {
 		user_organizations.push(organization)
 		user.organizations = user_organizations
 
-		//await this.userRepo.save(user)
-		await user.save()
-
-		return true
+		await this.userRepo.save(user)
+		//await user.save()
+		*/
+		//return true
 	}
 	
 	@Mutation(() => Boolean)
@@ -72,7 +85,7 @@ export class UserResolver {
 	): Promise<boolean> {
 		await this.userRepo.delete({
 			id: id
-		});
+		})
 		return true
 	}
 
