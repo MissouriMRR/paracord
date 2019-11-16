@@ -61,22 +61,6 @@ export class UserResolver {
 		} 
 		user.organizations = userOrgs
 		return user.save()
-		/*
-		const organization : Organization = await this.orgRepo.findOneOrFail({id: orgid})
-		
-		let user_organizations : Organization[] = user.organizations
-		
-		////////////////TODO figure out why this doesnt work
-		if(user_organizations === null || user_organizations === undefined)
-			user_organizations = []
-		
-		user_organizations.push(organization)
-		user.organizations = user_organizations
-
-		await this.userRepo.save(user)
-		//await user.save()
-		*/
-		//return true
 	}
 	
 	@Mutation(() => Boolean)
