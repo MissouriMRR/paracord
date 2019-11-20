@@ -1,4 +1,4 @@
-import { Query, Resolver, Mutation, Args, Arg, Int } from "type-graphql";
+import { Query, Resolver, Mutation, Arg, Int } from "type-graphql";
 import { Repository, getRepository} from "typeorm";
 import { Drone } from "./drone";
 
