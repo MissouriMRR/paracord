@@ -1,7 +1,7 @@
-import { Field, ID, ObjectType, Int} from "type-graphql"
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne, ManyToMany } from "typeorm"
+import { Field, ID, ObjectType } from "type-graphql"
+import { BaseEntity, Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Lazy } from "../src/helpers"
 import { Organization } from "./organization"
-import { Lazy } from "./helpers"
 
 @ObjectType()
 @Entity()
@@ -17,8 +17,8 @@ export class User extends BaseEntity {
 	@Field()
 	@Column()
 	password: string
-	
+
 	@Field(() => [Organization])
-	@ManyToMany(() => Organization, organization => organization.users, {nullable : true, lazy: true})
+	@ManyToMany(() => Organization, organization => organization.users, { nullable: true, lazy: true })
 	organizations: Lazy<Organization[]>
 }
