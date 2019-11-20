@@ -5,10 +5,10 @@ import { createServer } from 'http'
 import "reflect-metadata"
 import { buildSchema } from "type-graphql"
 import { createConnection } from "typeorm"
-import { DroneResolver } from "./drone-resolver"
-import { OrganizationResolver } from "./organization-resolver"
-import { UserResolver } from './user-resolver'
-import { SessionResolver } from './session-resolver'
+import { DroneResolver } from "./resolvers/drone-resolver"
+import { OrganizationResolver } from "./resolvers/organization-resolver"
+import { SessionResolver } from './resolvers/session-resolver'
+import { UserResolver } from './resolvers/user-resolver'
 
 const port = 3000
 
@@ -16,7 +16,7 @@ console.log('Connecting to database')
 createConnection().then(async connection => {
 
 	console.log('Building schemas')
-	const gqlschema = await buildSchema({ resolvers: [DroneResolver, OrganizationResolver, UserResolver, SessionResolver]})
+	const gqlschema = await buildSchema({ resolvers: [DroneResolver, OrganizationResolver, UserResolver, SessionResolver] })
 
 	console.log('Creating express app')
 	const app = express()
