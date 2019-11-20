@@ -1,4 +1,4 @@
-import { Query, Resolver, Mutation, Args, Arg, Int, ID } from "type-graphql"
+import { Query, Resolver, Mutation, Arg, Int} from "type-graphql"
 import { Repository, getRepository} from "typeorm"
 import { User } from "./user"
 import { Organization } from "./organization"
@@ -43,8 +43,6 @@ export class UserResolver {
 		})
 		return user.save()
 	}
-	//Nodemon
-	//Prettier with default
 
 	@Mutation(() => User)
 	protected async addUserToOrganization (
