@@ -2,10 +2,9 @@
 	"name": "gql_e1",
 	"version": "1.0.0",
 	"private": true,
-	"main": "index.js",
 	"scripts": {
-		"prestart": "tsc",
-		"start": "node index.js"
+		"build": "tsc",
+		"start": "node bin/index.js"
 	},
 	"dependencies": {
 		"@types/graphql": "^14.5.0",
