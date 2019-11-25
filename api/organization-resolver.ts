@@ -42,7 +42,8 @@ export class OrganizationResolver {
 	): Promise<boolean> {
 		await this.orgRepo.delete({
 			id: id
-		});
+		})
 		return true
 	}
+
 }
