@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType, Int} from "type-graphql"
+import { Field, ObjectType, Int} from "type-graphql"
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne, ManyToMany } from "typeorm"
 import { Organization } from "./organization"
 import { Lazy } from "./helpers"
@@ -6,7 +6,7 @@ import { Lazy } from "./helpers"
 @ObjectType()
 @Entity()
 export class User extends BaseEntity {
-	@Field(() => ID)
+	@Field(() => Int)
 	@PrimaryGeneratedColumn()
 	id: number
 

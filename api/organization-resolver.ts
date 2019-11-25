@@ -1,4 +1,4 @@
-import { Query, Resolver, Mutation, Args, Arg, Int, FieldResolver, Root } from "type-graphql"
+import { Query, Resolver, Mutation, Arg, Int } from "type-graphql"
 import { Repository, getRepository} from "typeorm"
 import { Organization } from "./organization"
 import { User } from "./user"
@@ -17,7 +17,10 @@ export class OrganizationResolver {
 	protected async createOrganization(
         @Arg("name", () => String) name: string 
 	): Promise<Organization> {
-		const organization : Organization = this.orgRepo.create({ name: name, users: [] })
+		const organization : Organization = this.orgRepo.create({
+			name: name,
+			users: [] 
+		})
 		return organization.save()
     }
     
