@@ -17,7 +17,7 @@ export class User extends BaseEntity {
 	@Field()
 	@Column()
 	password: string
-	
+
 	@Field(() => [Organization])
 	@ManyToMany(() => Organization, organization => organization.users, {nullable : true, lazy: true})
 	organizations: Lazy<Organization[]>

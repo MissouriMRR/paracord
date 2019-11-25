@@ -15,7 +15,7 @@ export class Organization extends BaseEntity {
 	name: string
 
 	@Field(() => [User])
-    @ManyToMany(() => User, user => user.organizations, {nullable : true, lazy: true})
+	@ManyToMany(() => User, user => user.organizations, {nullable : true, lazy: true})
 	@JoinTable()
 	users: Lazy<User[]>
 }

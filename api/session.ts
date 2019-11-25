@@ -4,26 +4,26 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, U
 @ObjectType()
 @Entity()
 export class Session extends BaseEntity {
-	@Field(() => Int)
-	@PrimaryGeneratedColumn()
-	id: number
+    @Field(() => Int)
+    @PrimaryGeneratedColumn()
+    id: number
 
-	@Field()
-	@Column()
+    @Field()
+    @Column()
     purpose: string
 
     @Field()
-	@Column()
+    @Column()
     location: string
 
     @Field()
-	@Column()
+    @Column()
     terrain: string
 
     @Field()
-	@Column()
+    @Column()
     weather: string
-    
+
     @Field()
     @CreateDateColumn()
     startTime: Date
@@ -33,10 +33,10 @@ export class Session extends BaseEntity {
     endTime: Date
 
     @Field()
-	@Column()
+    @Column()
     description: string
 
     @Field()
-	@Column({nullable : true})
+    @Column({nullable : true})
     outcome: string
 }
