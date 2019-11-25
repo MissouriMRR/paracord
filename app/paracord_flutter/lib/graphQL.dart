@@ -1,7 +1,7 @@
 import 'package:graphql/client.dart';
 
 final _httpLink = HttpLink(
-  uri: "http://192.168.99.100/graphql", // TODO get an actual domain name
+  uri: "http://192.168.99.101/graphql", // TODO get an actual domain name
 );
 
 final client = GraphQLClient(

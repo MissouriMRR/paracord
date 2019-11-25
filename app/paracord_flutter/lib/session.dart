@@ -301,19 +301,26 @@ class _NewSessionPageState extends State<NewSessionPage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: _session.validPost ? null : Colors.grey,
-        child: Icon(Icons.save),
-        onPressed: _session.validPost
-            ? () async {
-                await Session.postSession(_session);
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SessionPage(session: _session)),
-                );
+      floatingActionButton: Builder(
+        builder: (context) {
+          return FloatingActionButton(
+            child: Icon(Icons.save),
+            onPressed: () async {
+              if (!_session.validPost) {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text("Please complete all required fields"),
+                ));
+                return;
               }
-            : null,
+              await Session.postSession(_session);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SessionPage(session: _session)),
+              );
+            },
+          );
+        },
       ),
     );
   }
