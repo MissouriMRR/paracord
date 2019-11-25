@@ -25,7 +25,7 @@ export class SessionResolver {
 			terrain: terrain,
 			weather: weather, 
 			description: description,
-			outcome: ""
+			outcome: "",
 		})
 		return session.save()
 	}
