@@ -12,7 +12,7 @@ export class DroneResolver {
 	}
 
 	@Mutation(() => Drone)
-	protected async createDrone_EEEEEEEEE(
+	protected async createDrone(
 		@Arg("id", () => Int) id: number,
 		@Arg("name", () => String) name: string 
 	): Promise<Drone> {
