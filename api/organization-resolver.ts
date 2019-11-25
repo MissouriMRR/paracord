@@ -6,7 +6,7 @@ import { User } from "./user"
 @Resolver(() => Organization)
 export class OrganizationResolver {
 	public orgRepo: Repository<Organization> = getRepository(Organization) 
-    public userRepo: Repository<User> = getRepository(User)
+	public userRepo: Repository<User> = getRepository(User)
 
 	@Query(() => [Organization])
 	protected async organizations(): Promise<Organization[]> {
