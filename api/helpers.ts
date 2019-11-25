@@ -1,1 +1,1 @@
-export type Lazy<T extends object> = Promise<T> | T;
+export type Lazy<T extends object> = Promise<T> | T

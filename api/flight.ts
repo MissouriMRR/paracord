@@ -1,9 +1,9 @@
 import { Field, ObjectType, Int} from "type-graphql"
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm"
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn} from "typeorm"
 
 @ObjectType()
 @Entity()
-export class Session extends BaseEntity {
+export class Flight extends BaseEntity {
     @Field(() => Int)
     @PrimaryGeneratedColumn()
     id: number
@@ -11,18 +11,6 @@ export class Session extends BaseEntity {
     @Field()
     @Column()
     purpose: string
-
-    @Field()
-    @Column()
-    location: string
-
-    @Field()
-    @Column()
-    terrain: string
-
-    @Field()
-    @Column()
-    weather: string
 
     @Field()
     @CreateDateColumn()

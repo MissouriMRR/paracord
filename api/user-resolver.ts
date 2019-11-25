@@ -19,7 +19,7 @@ export class UserResolver {
 	): Promise<User> {
 		return this.userRepo.findOneOrFail({
 			email: email
-        });
+        })
 	}
 
 	@Query(() => User)
@@ -28,7 +28,7 @@ export class UserResolver {
 	): Promise<User> {
 		return this.userRepo.findOneOrFail({
 			id: id
-        });
+        })
 	}
 
 	@Mutation(() => User)
