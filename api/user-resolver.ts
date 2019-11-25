@@ -51,7 +51,7 @@ export class UserResolver {
 	): Promise<User> {
 		let organization : Organization = await this.orgRepo.findOneOrFail({id: orgid})
 		let user : User = await this.userRepo.findOneOrFail({id : userid})
-		let userOrgs : Organization[] = await user.organizations;
+		let userOrgs : Organization[] = await user.organizations
 		if(userOrgs) {
 			userOrgs.push(organization)
 		} else {
