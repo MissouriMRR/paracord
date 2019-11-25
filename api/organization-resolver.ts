@@ -14,6 +14,18 @@ export class OrganizationResolver {
 	}
 
 	@Mutation(() => Organization)
+	protected async changeOrganizationName(
+		@Arg("id", () => Int) id: number,
+		@Arg("name", () => String) name: string 
+	): Promise<Organization> {
+		let org : Organization = await this.orgRepo.findOneOrFail({
+			id: id
+		})
+		org.name = name
+		return org.save()
+	}
+
+	@Mutation(() => Organization)
 	protected async createOrganization(
 		@Arg("name", () => String) name: string 
 	): Promise<Organization> {

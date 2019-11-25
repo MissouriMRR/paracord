@@ -13,6 +13,30 @@ export class UserResolver {
 		return await this.userRepo.find()
 	}
 
+	@Mutation(() => User)
+	protected async changeUserEmail(
+		@Arg("id", () => Int) id: number,
+		@Arg("email", () => String) email: string 
+	): Promise<User> {
+		let user : User = await this.userRepo.findOneOrFail({
+			id: id
+		})
+		user.email = email
+		return user.save()
+	}
+
+	@Mutation(() => User)
+	protected async changeUserPassword(
+		@Arg("id", () => Int) id: number,
+		@Arg("password", () => String) password: string 
+	): Promise<User> {
+		let user : User = await this.userRepo.findOneOrFail({
+			id: id
+		})
+		user.password = password
+		return user.save()
+	}
+
 	@Query(() => User)
 	protected async returnUserByEmail(
 		@Arg("email", () => String) email: string
