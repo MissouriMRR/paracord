@@ -15,8 +15,6 @@ services:
     build: .
     volumes:
       - .:/web
-      - paracord_node_modules:/web/node_modules
-      - paracord_bin:/web/bin
     ports: 
       - "80:3000"
     networks:
@@ -30,7 +28,3 @@ networks:
     driver: bridge
   paracord_db_nw:
     driver: bridge
-
-volumes: 
-  paracord_node_modules:
-  paracord_bin:
