@@ -2,7 +2,8 @@ version: '3'
 
 services: 
   paracord_db: 
-    image: "postgres"
+    # Frozen at 11.6 until https://github.com/typeorm/typeorm/issues/4332 is fixed
+    image: "postgres:11.6"
     ports:
       - "5432:5432"
     networks:
@@ -15,8 +16,6 @@ services:
     build: .
     volumes:
       - .:/web
-      - paracord_node_modules:/web/node_modules
-      - paracord_bin:/web/bin
     ports: 
       - "80:3000"
     networks:
@@ -30,7 +29,3 @@ networks:
     driver: bridge
   paracord_db_nw:
     driver: bridge
-
-volumes: 
-  paracord_node_modules:
-  paracord_bin:
