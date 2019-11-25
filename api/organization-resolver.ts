@@ -15,15 +15,15 @@ export class OrganizationResolver {
 
 	@Mutation(() => Organization)
 	protected async createOrganization(
-        @Arg("name", () => String) name: string 
+		@Arg("name", () => String) name: string 
 	): Promise<Organization> {
 		const organization : Organization = this.orgRepo.create({
 			name: name,
 			users: [] 
 		})
 		return organization.save()
-    }
-    
+	}
+
 	@Mutation(() => Boolean)
 	protected async deleteOrganizationByID(
 		@Arg("id", () => Int) id: number
