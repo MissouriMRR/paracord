@@ -1,12 +1,12 @@
 
-import { Field, ID, ObjectType } from "type-graphql"
+import { Field, ObjectType, Int} from "type-graphql"
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from "typeorm"
 import { User } from "./user"
 import { Lazy } from "./helpers"
 @ObjectType()
 @Entity()
 export class Organization extends BaseEntity {
-	@Field(() => ID)
+	@Field(() => Int)
 	@PrimaryGeneratedColumn()
 	id: number
 
@@ -15,7 +15,7 @@ export class Organization extends BaseEntity {
 	name: string
 
 	@Field(() => [User])
-    @ManyToMany(() => User, user => user.organizations, {nullable : true, lazy: true})
+	@ManyToMany(() => User, user => user.organizations, {nullable : true, lazy: true})
 	@JoinTable()
 	users: Lazy<User[]>
 }

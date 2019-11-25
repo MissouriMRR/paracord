@@ -1,10 +1,10 @@
-import { Field, ID, ObjectType } from "type-graphql"
+import { Field, ObjectType, Int } from "type-graphql"
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm"
 
 @ObjectType()
 @Entity()
 export class Drone extends BaseEntity {
-	@Field(() => ID)
+	@Field(() => Int)
 	@PrimaryGeneratedColumn()
 	id: number
 

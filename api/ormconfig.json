@@ -10,6 +10,7 @@
 		"./drone.js",
 		"./organization.js",
 		"./user.js",
-		"./session.js"
+		"./session.js",
+		"./flight.js"
 	]
 }
