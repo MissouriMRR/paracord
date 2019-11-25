@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType } from "type-graphql"
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, CreateDateColumn} from "typeorm"
 
 @ObjectType()
 @Entity()
@@ -10,13 +10,13 @@ export class Session extends BaseEntity {
 
 	@Field()
 	@Column()
-	purpose: string
+    purpose: string
+    
+    @Field()
+    @CreateDateColumn()
+    date: Date
 
-	@Field()
-	@CreateDateColumn()
-	date: Date
-
-	@Field()
+    @Field()
 	@Column()
-	description: string
+    description: string
 }
