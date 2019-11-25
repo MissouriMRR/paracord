@@ -1,26 +1,24 @@
-
-import { Field, ID, ObjectType } from "type-graphql";
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne} from "typeorm";
-import { Organization } from "./organization";
-import { RelationColumn } from "./helpers";
+import { Field, ID, ObjectType, Int} from "type-graphql"
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne, ManyToMany } from "typeorm"
+import { Organization } from "./organization"
+import { Lazy } from "./helpers"
 
 @ObjectType()
 @Entity()
 export class User extends BaseEntity {
 	@Field(() => ID)
 	@PrimaryGeneratedColumn()
-	id: number;
+	id: number
 
 	@Field()
 	@Column()
-	email: string;
+	email: string
 
 	@Field()
 	@Column()
-	password: string;
+	password: string
 	
-	@ManyToOne(() => Organization)
-	organization: Organization;
-	@RelationColumn()
-	orgid: number;
+	@Field(() => [Organization])
+	@ManyToMany(() => Organization, organization => organization.users, {nullable : true, lazy: true})
+	organizations: Lazy<Organization[]>
 }

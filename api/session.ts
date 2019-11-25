@@ -1,22 +1,22 @@
-import { Field, ID, ObjectType } from "type-graphql";
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, CreateDateColumn} from "typeorm";
+import { Field, ID, ObjectType } from "type-graphql"
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, CreateDateColumn} from "typeorm"
 
 @ObjectType()
 @Entity()
 export class Session extends BaseEntity {
 	@Field(() => ID)
 	@PrimaryGeneratedColumn()
-	id: number;
+	id: number
 
 	@Field()
 	@Column()
-    purpose: string;
+    purpose: string
     
     @Field()
     @CreateDateColumn()
-    date: Date;
+    date: Date
 
     @Field()
 	@Column()
-    description: string;
+    description: string
 }
