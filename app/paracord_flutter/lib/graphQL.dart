@@ -19,6 +19,41 @@ String getGraphQLType(dynamic value) {
   }
 }
 
+class QueryOptionsWrapper {
+  String queryName;
+  Map<String, dynamic> variables;
+  List<String> queries;
+
+  QueryOptionsWrapper({this.queryName, this.variables, this.queries});
+
+  Map<String, String> _getGraphQLVariableTypes() =>
+      variables.map<String, String>((k, v) => MapEntry(k, getGraphQLType(v)));
+
+  QueryOptions get options {
+    StringBuffer queryBuffer = StringBuffer();
+    queries.forEach((item) => queryBuffer.write("$item,"));
+
+    if (variables == null) {
+      String document = "query{$queryName{${queryBuffer.toString()}}}";
+      return QueryOptions(document: document);
+    } else {
+      var vars = _getGraphQLVariableTypes();
+      StringBuffer varBuffer = StringBuffer();
+      vars.forEach((k, v) => varBuffer.write("\$$k:$v!,"));
+
+      StringBuffer argBuffer = StringBuffer();
+      variables.forEach((k, v) => argBuffer.write("$k:\$$k,"));
+
+      String document =
+          "query(${varBuffer.toString()}){$queryName(${argBuffer.toString()}){${queryBuffer.toString()}}}";
+      return QueryOptions(
+        document: document,
+        variables: variables,
+      );
+    }
+  }
+}
+
 class MutationOptionsWrapper {
   String mutationName;
   Map<String, dynamic> variables;
@@ -28,7 +63,7 @@ class MutationOptionsWrapper {
   Map<String, String> _getGraphQLVariableTypes() =>
       variables.map<String, String>((k, v) => MapEntry(k, getGraphQLType(v)));
 
-  get options {
+  MutationOptions get options {
     var vars = _getGraphQLVariableTypes();
     StringBuffer varBuffer = StringBuffer();
     vars.forEach((k, v) => varBuffer.write("\$$k:$v!,"));

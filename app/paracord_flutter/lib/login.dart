@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:paracord_flutter/user.dart';
+
+User currentUser;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -6,8 +9,30 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  User _user;
+  bool validEmail = true;
+  bool validPassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _user = User();
+    _emailController.addListener(() {
+      _user.email = _emailController.text;
+      setState(() {
+        validEmail = true;
+      });
+    });
+    _passwordController.addListener(() {
+      _user.password = _passwordController.text;
+      setState(() {
+        validPassword = true;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,33 +59,66 @@ class _LoginPageState extends State<LoginPage> {
             Column(children: <Widget>[
               // [Username]
               TextField(
-                controller: _usernameController,
-                decoration: InputDecoration(labelText: 'Username'),
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  errorText: validEmail ? null : 'Invalid Email',
+                ),
               ),
               SizedBox(height: 12.0),
               // [Password]
               TextField(
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  errorText: validPassword ? null : 'Invalid Password',
+                ),
                 obscureText: true,
               ),
               ButtonBar(
                 children: <Widget>[
                   FlatButton(
+                    child: Text('REGISTER'),
+                    onPressed: () async {
+                      if (_user.email == null || _user.email.isEmpty) {
+                        setState(() {
+                          validEmail = false;
+                        });
+                        return;
+                      }
+                      if (_user.password == null || _user.password.isEmpty) {
+                        setState(() {
+                          validPassword = false;
+                        });
+                        return;
+                      }
+                      _user = await User.createUser(_user);
+                      currentUser = _user;
+                      Navigator.pop(context);
+                    },
+                  ),
+                  FlatButton(
                     child: Text('CLEAR'),
                     onPressed: () {
-                      _usernameController.clear();
+                      _emailController.clear();
                       _passwordController.clear();
                     },
                   ),
-                  // FlatButton(
-                  //   child: Text('REGISTER'),
-                  //   onPressed: () {},
-                  // ),
                   RaisedButton(
                     child: Text('LOGIN'),
-                    onPressed: () {
-                      
+                    onPressed: () async {
+                      if (!await _user.validateEmail()) {
+                        setState(() {
+                          validEmail = false;
+                        });
+                        return;
+                      }
+                      if (!await _user.validatePassword()) {
+                        setState(() {
+                          validPassword = false;
+                        });
+                        return;
+                      }
                       Navigator.pop(context);
                     },
                   )
