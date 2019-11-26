@@ -45,24 +45,14 @@ export class FlightResolver {
 		let session: Session = await this.sessionRepo.findOneOrFail({
 			id: sessionid
 		})
-		let sessionFlights: Flight[] = await session.flights
-		
+
 		let flight: Flight = this.flightRepo.create({
 			purpose: purpose,
 			description: description,
-			outcome: ""
+			outcome: "",
+			session: session
 		})
-		await flight.save()
 
-		if(sessionFlights) {
-			sessionFlights.push(flight)
-		} else {
-			sessionFlights = [flight]
-		}
-		
-		session.flights = sessionFlights
-		await session.save()
-		
 		return flight.save()
 	}
 
