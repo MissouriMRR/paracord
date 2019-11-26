@@ -1,10 +1,12 @@
 import { Query, Resolver, Mutation, Arg, Int } from "type-graphql"
 import { Repository, getRepository} from "typeorm"
 import { Session } from "./session"
+import { User } from "./user"
 
 @Resolver(() => Session)
 export class SessionResolver {
 	public sessionRepo: Repository<Session> = getRepository(Session)
+	public userRepo: Repository<User> = getRepository(User)
 
 	@Query(() => [Session])
 	protected async sessions(): Promise<Session[]> {
@@ -17,16 +19,23 @@ export class SessionResolver {
 		@Arg("location", () => String) location: string,
 		@Arg("terrain", () => String) terrain: string,
 		@Arg("weather", () => String) weather: string,
-        @Arg("description", () => String) description: string
+		@Arg("description", () => String) description: string,
+		@Arg("userid", () => Int) userid: number
 	): Promise<Session> {
-		const session = this.sessionRepo.create({
+		const user: User = await this.userRepo.findOneOrFail({
+			id: userid
+		})
+
+		const session: Session = this.sessionRepo.create({
 			purpose: purpose,
 			location: location,
 			terrain: terrain,
 			weather: weather, 
 			description: description,
 			outcome: "",
+			user: user
 		})
+
 		return session.save()
 	}
 

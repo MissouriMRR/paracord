@@ -2,6 +2,7 @@ import { Field, ObjectType, Int} from "type-graphql"
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, JoinTable } from "typeorm"
 import { Lazy } from "./helpers"
 import { Session } from "./session"
+import { User } from "./user"
 
 @ObjectType()
 @Entity()
