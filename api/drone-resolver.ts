@@ -1,10 +1,12 @@
 import { Query, Resolver, Mutation, Arg, Int } from "type-graphql"
 import { Repository, getRepository} from "typeorm"
 import { Drone } from "./drone"
+import { Organization } from "./organization"
 
 @Resolver(() => Drone)
 export class DroneResolver {
-	public droneRepo: Repository<Drone> = getRepository(Drone); 
+	public droneRepo: Repository<Drone> = getRepository(Drone) 
+	public orgRepo: Repository<Organization> = getRepository(Organization)
 
 	@Query(() => [Drone])
 	protected async drones(): Promise<Drone[]> {
@@ -13,11 +15,18 @@ export class DroneResolver {
 
 	@Mutation(() => Drone)
 	protected async createDrone(
-		@Arg("name", () => String) name: string 
+		@Arg("name", () => String) name: string,
+		@Arg("orgid", () => Int) orgid: number
 	): Promise<Drone> {
-		const drone = this.droneRepo.create({
-			name: name
+		let org: Organization = await this.orgRepo.findOneOrFail({
+			id: orgid
 		})
+
+		let drone: Drone = this.droneRepo.create({
+			name: name,
+			organization: org
+		})
+
 		return drone.save()
 	}
 	
