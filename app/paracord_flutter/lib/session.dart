@@ -10,22 +10,6 @@ class Session {
   static final String _queryName = "sessions";
   static final String _queryArgs = "id,purpose,date,description";
   static final String _queryDocument = "query{$_queryName{$_queryArgs}}";
-  static final String _mutationName = "createSession";
-
-  static Future<Session> postSession(Session session) async {
-    QueryResult result = await client.mutate(MutationOptionsWrapper(
-      mutationName: _mutationName,
-      queries: ["id", "date"],
-      variables: <String, dynamic>{
-        "purpose": session.purpose,
-        "description": session.description,
-      },
-    ).options);
-    if (result.hasErrors) throw result.errors;
-    session.id = result.data[_mutationName]['id'];
-    session.date = DateTime.parse(result.data[_mutationName]['date']);
-    return session;
-  }
 
   static Future<Iterable<Session>> fetchSessions() async {
     QueryResult result =
@@ -40,19 +24,76 @@ class Session {
     return client.watchQuery(WatchQueryOptions(document: _queryDocument));
   }
 
+  static Future<Session> createSession(Session session) async {
+    final String mutationName = "createSession";
+    QueryResult result = await client.mutate(MutationOptionsWrapper(
+      mutationName: mutationName,
+      queries: ["id", "date"],
+      variables: <String, dynamic>{
+        "purpose": session.purpose,
+        "description": session.description,
+      },
+    ).options);
+    if (result.hasErrors) throw result.errors;
+    session.id = result.data[mutationName]['id'];
+    session.date = DateTime.parse(result.data[mutationName]['date']);
+    return session;
+  }
+
+  static Future<Session> endSession(Session session) async {
+    final String mutationName = "endSession";
+    QueryResult result = await client.mutate(MutationOptionsWrapper(
+      mutationName: mutationName,
+      queries: ["id", "endTime"],
+      variables: <String, dynamic>{
+        "id": session.id,
+        "outcome": session.outcome,
+      },
+    ).options);
+    if (result.hasErrors) throw result.errors;
+    session.id = result.data[mutationName]['id'];
+    session.endTime = DateTime.parse(result.data[mutationName]['endTime']);
+    return session;
+  }
+
   String id;
   String purpose;
   DateTime date;
+  DateTime endTime;
   String description;
   String droneId;
+  String outcome;
+  String userId;
+  String location;
+  String weather;
+  String terrain;
 
-  Session({this.id, this.purpose, this.date, this.description});
+  Session({
+    this.id,
+    this.purpose,
+    this.date,
+    this.endTime,
+    this.description,
+    this.droneId,
+    this.outcome,
+    this.userId,
+    this.location,
+    this.weather,
+    this.terrain,
+  });
 
   factory Session.fromMap(Map<String, dynamic> data) => Session(
         id: data['id'],
         purpose: data['purpose'],
         date: DateTime.parse(data['date']),
+        endTime: DateTime.parse(data['endTime']),
         description: data['description'],
+        droneId: data['droneId'],
+        outcome: data['outcome'],
+        userId: data['userId'],
+        location: data['location'],
+        weather: data['weather'],
+        terrain: data['terrain'],
       );
 
   /// true if all fields required to post are non-null
@@ -191,37 +232,35 @@ class NewSessionPage extends StatefulWidget {
 
 class _NewSessionPageState extends State<NewSessionPage> {
   Session _session;
+
   Future<Iterable<Drone>> _drones;
 
-  final _preparerController = TextEditingController();
-  final _pilotController = TextEditingController();
   final _purposeController = TextEditingController();
   final _locationController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _weatherController = TextEditingController();
+  final _terrainController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _drones = Drone.fetchDrones();
     _session = Session();
-    /*
-    _preparerController.addListener(() {
-      _session.preparer = _preparerController.text;
-    });
-    _pilotController.addListener(() {
-      _session.pilot = _pilotController.text;
-    });
-    */
+
     _purposeController.addListener(() {
       _session.purpose = _purposeController.text;
     });
-    /*
+    _descriptionController.addListener(() {
+      _session.description = _descriptionController.text;
+    });
     _locationController.addListener(() {
       _session.location = _locationController.text;
     });
-    */
-    _descriptionController.addListener(() {
-      _session.description = _descriptionController.text;
+    _weatherController.addListener(() {
+      _session.weather = _weatherController.text;
+    });
+    _terrainController.addListener(() {
+      _session.terrain = _terrainController.text;
     });
   }
 
@@ -232,24 +271,9 @@ class _NewSessionPageState extends State<NewSessionPage> {
       body: DropdownButtonHideUnderline(
         child: ListView(
           children: <Widget>[
-            /*
-            ListTile(
-              title: TextField(
-                // TODO User.name
-                controller: _preparerController,
-                decoration: InputDecoration(labelText: 'Preparer'),
-              ),
-            ),
-            ListTile(
-              title: TextField(
-                controller: _pilotController,
-                decoration: InputDecoration(labelText: 'Pilot'),
-              ),
-            ),
-            */
             ListTile(
               title: InputDecorator(
-                isEmpty: _session.droneId == null,
+                isEmpty: _session.userId == null,
                 decoration: InputDecoration(labelText: 'Drone'),
                 child: FutureBuilder<Iterable<Drone>>(
                   future: _drones,
@@ -284,20 +308,30 @@ class _NewSessionPageState extends State<NewSessionPage> {
                 decoration: InputDecoration(labelText: 'Purpose'),
               ),
             ),
-            /*
+            ListTile(
+                title: TextField(
+              maxLines: null,
+              controller: _descriptionController,
+              decoration: InputDecoration(labelText: 'Description'),
+            )),
             ListTile(
               title: TextField(
                 controller: _locationController,
                 decoration: InputDecoration(labelText: 'Location'),
               ),
             ),
-            */
             ListTile(
-                title: TextField(
-              maxLines: null,
-              controller: _descriptionController,
-              decoration: InputDecoration(labelText: 'Description'),
-            ))
+              title: TextField(
+                controller: _weatherController,
+                decoration: InputDecoration(labelText: 'Weather'),
+              ),
+            ),
+            ListTile(
+              title: TextField(
+                controller: _terrainController,
+                decoration: InputDecoration(labelText: 'Terrain'),
+              ),
+            ),
           ],
         ),
       ),
@@ -312,7 +346,7 @@ class _NewSessionPageState extends State<NewSessionPage> {
                 ));
                 return;
               }
-              await Session.postSession(_session);
+              await Session.createSession(_session);
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(

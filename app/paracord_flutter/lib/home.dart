@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:graphql/client.dart';
 import 'package:graphql/internal.dart';
-import 'package:paracord_flutter/graphQL.dart';
+import 'package:paracord_flutter/login.dart';
 import 'package:paracord_flutter/session.dart';
 
 class HomePage extends StatefulWidget {
@@ -64,9 +63,17 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            currentAccountPicture: CircleAvatar(child: Text('B')),
-            accountName: Text('bob'),
-            accountEmail: Text('bob@bob.com'),
+            currentAccountPicture: CircleAvatar(
+              child: Text((currentUser?.email != null
+                      ? currentUser.email[0]?.toUpperCase()
+                      : null) ??
+                  'undefined'),
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.accents[
+                  currentUser?.email?.hashCode ?? 0 % Colors.accents.length],
+            ),
+            accountName: Text(currentUser?.email ?? ''),
+            accountEmail: Text(currentUser?.password ?? ''),
           ),
           ListTile(
             title: Text('Organizations'),
@@ -76,6 +83,7 @@ class _HomePageState extends State<HomePage> {
             title: Text('Logout'),
             trailing: Icon(Icons.exit_to_app),
             onTap: () {
+              currentUser = null;
               Navigator.pushNamed(context, '/login');
             },
           ),
@@ -95,8 +103,7 @@ class _HomePageState extends State<HomePage> {
           case ConnectionState.waiting:
             return CircularProgressIndicator();
           case ConnectionState.active:
-            if(!snapshot.hasData)
-              return CircularProgressIndicator();
+            if (!snapshot.hasData) return CircularProgressIndicator();
             if (snapshot.data.isEmpty) {
               return Text("No Sessions Available");
             }

@@ -16,7 +16,13 @@ class Drone {
   String id;
   String name;
 
-  Drone({this.id, this.name});
-  factory Drone.fromMap(Map<String, dynamic> data) =>
-      Drone(id: data['id'], name: data['name']);
+  Drone({
+    this.id,
+    this.name,
+  });
+  
+  factory Drone.fromMap(Map<String, dynamic> data) => Drone(
+        id: data['id'],
+        name: data['name'],
+      );
 }
