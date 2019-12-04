@@ -3,6 +3,7 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, U
 import { Lazy } from "./helpers"
 import { Flight } from "./flight"
 import { User } from "./user"
+import { Drone } from "./drone"
 
 @ObjectType()
 @Entity()
