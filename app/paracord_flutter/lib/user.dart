@@ -1,14 +1,19 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:graphql/client.dart';
 import 'package:paracord_flutter/graphQL.dart';
 
 class CurrentUserModel extends ChangeNotifier {
   User _currentUser;
 
-  get currentUser => _currentUser;
+  User get currentUser => _currentUser;
   set currentUser(User user) {
     _currentUser = user;
     notifyListeners();
+  }
+
+  void initUser() {
+    _currentUser = User();
   }
 }
 
@@ -64,7 +69,7 @@ class User {
 
   factory User.fromMap(Map<String, dynamic> data) => User(
         id: data['id'],
-        email: data['name'],
+        email: data['email'],
         password: data['password'],
       );
 
@@ -90,4 +95,11 @@ class User {
     if (this.password == test.password) return true;
     return false;
   }
+
+  CircleAvatar get avatar => CircleAvatar(
+        child: Text(this.email[0]?.toUpperCase() ?? 'User\nNull'),
+        foregroundColor: Colors.white,
+        backgroundColor:
+            Colors.accents[(this.email?.hashCode ?? 0) % Colors.accents.length],
+      );
 }
