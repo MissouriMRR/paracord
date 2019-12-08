@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:paracord_flutter/home.dart';
 import 'package:paracord_flutter/login.dart';
+import 'package:paracord_flutter/user.dart';
+import 'package:provider/provider.dart';
 
-
-void main() => runApp(ParacordApp());
+void main() => runApp(ChangeNotifierProvider(
+      create: (context) => CurrentUserModel(),
+      child: ParacordApp(),
+    ));
 
 class ParacordApp extends StatelessWidget {
   @override

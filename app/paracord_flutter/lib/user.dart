@@ -1,5 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
 import 'package:paracord_flutter/graphQL.dart';
+
+class CurrentUserModel extends ChangeNotifier {
+  User _currentUser;
+
+  get currentUser => _currentUser;
+  set currentUser(User user) {
+    _currentUser = user;
+    notifyListeners();
+  }
+}
 
 class User {
   static final String _queryName = "users";
@@ -25,6 +36,7 @@ class User {
     return user;
   }
 
+  /// Creates the user in the databases
   static Future<User> createUser(User user) async {
     final mutationName = "createUser";
     QueryResult result = await client.mutate(MutationOptionsWrapper(
@@ -58,8 +70,9 @@ class User {
 
   Future<bool> validateEmail() async {
     if (this.email == null) return false;
+    User test = User(email: this.email);
     try {
-      await fetchByEmail(this);
+      await fetchByEmail(test);
     } catch (e) {
       return false;
     }
@@ -67,6 +80,14 @@ class User {
   }
 
   Future<bool> validatePassword() async {
-    return false; // TODO
+    if (this.password == null) return false;
+    User test = User(email: this.email);
+    try {
+      await fetchByEmail(test);
+    } catch (e) {
+      return false;
+    }
+    if (this.password == test.password) return true;
+    return false;
   }
 }

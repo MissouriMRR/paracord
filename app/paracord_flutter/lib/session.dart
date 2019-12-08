@@ -8,7 +8,7 @@ import 'package:paracord_flutter/transition.dart';
 
 class Session {
   static final String _queryName = "sessions";
-  static final String _queryArgs = "id,purpose,date,description";
+  static final String _queryArgs = "id,purpose,startTime,description";
   static final String _queryDocument = "query{$_queryName{$_queryArgs}}";
 
   static Future<Iterable<Session>> fetchSessions() async {
@@ -28,7 +28,7 @@ class Session {
     final String mutationName = "createSession";
     QueryResult result = await client.mutate(MutationOptionsWrapper(
       mutationName: mutationName,
-      queries: ["id", "date"],
+      queries: ["id", "startTime"],
       variables: <String, dynamic>{
         "purpose": session.purpose,
         "description": session.description,
@@ -36,7 +36,7 @@ class Session {
     ).options);
     if (result.hasErrors) throw result.errors;
     session.id = result.data[mutationName]['id'];
-    session.date = DateTime.parse(result.data[mutationName]['date']);
+    session.startTime = DateTime.parse(result.data[mutationName]['startTime']);
     return session;
   }
 
@@ -58,7 +58,7 @@ class Session {
 
   String id;
   String purpose;
-  DateTime date;
+  DateTime startTime;
   DateTime endTime;
   String description;
   String droneId;
@@ -71,7 +71,7 @@ class Session {
   Session({
     this.id,
     this.purpose,
-    this.date,
+    this.startTime,
     this.endTime,
     this.description,
     this.droneId,
@@ -85,7 +85,7 @@ class Session {
   factory Session.fromMap(Map<String, dynamic> data) => Session(
         id: data['id'],
         purpose: data['purpose'],
-        date: DateTime.parse(data['date']),
+        startTime: DateTime.parse(data['startTime']),
         endTime: DateTime.parse(data['endTime']),
         description: data['description'],
         droneId: data['droneId'],
@@ -185,7 +185,7 @@ class _SessionPageState extends State<SessionPage>
         Divider(),
         ListTile(
           title: Text("Date"),
-          subtitle: Text(widget.session.date.toString()),
+          subtitle: Text(widget.session.startTime.toString()),
         )
       ],
     );
