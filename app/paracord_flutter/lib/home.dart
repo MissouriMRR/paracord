@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:graphql/internal.dart';
-import 'package:paracord_flutter/login.dart';
 import 'package:paracord_flutter/session.dart';
+import 'package:paracord_flutter/user.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -20,6 +21,7 @@ class _HomePageState extends State<HomePage> {
     _sessionQuery = Session.watchSessions();
     _sessionStream = _sessionQuery.stream.map<Iterable<Session>>((result) {
       if (result.loading) return null;
+      if (result.hasErrors) throw result.errors;
       return (result.data["sessions"] as Iterable)
           .map((sessionData) => Session.fromMap(sessionData as Map));
     });
@@ -62,18 +64,21 @@ class _HomePageState extends State<HomePage> {
     return Drawer(
       child: Column(
         children: <Widget>[
-          UserAccountsDrawerHeader(
-            currentAccountPicture: CircleAvatar(
-              child: Text((currentUser?.email != null
-                      ? currentUser.email[0]?.toUpperCase()
-                      : null) ??
-                  'undefined'),
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.accents[
-                  currentUser?.email?.hashCode ?? 0 % Colors.accents.length],
+          Consumer<CurrentUserModel>(
+            builder: (context, user, child) => UserAccountsDrawerHeader(
+              currentAccountPicture: CircleAvatar(
+                child: Text((user.currentUser?.email != null
+                        ? user.currentUser.email[0]?.toUpperCase()
+                        : null) ??
+                    'User\nNull'),
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.accents[
+                    (user.currentUser?.email?.hashCode ?? 0) %
+                        Colors.accents.length],
+              ),
+              accountName: Text(user.currentUser?.email ?? ''),
+              accountEmail: Text(user.currentUser?.password ?? ''),
             ),
-            accountName: Text(currentUser?.email ?? ''),
-            accountEmail: Text(currentUser?.password ?? ''),
           ),
           ListTile(
             title: Text('Organizations'),
@@ -83,7 +88,8 @@ class _HomePageState extends State<HomePage> {
             title: Text('Logout'),
             trailing: Icon(Icons.exit_to_app),
             onTap: () {
-              currentUser = null;
+              Provider.of<CurrentUserModel>(context, listen: false)
+                  .currentUser = null;
               Navigator.pushNamed(context, '/login');
             },
           ),
@@ -117,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: Text(
-                    snapshot.data.elementAt(index).date?.toString() ??
+                    snapshot.data.elementAt(index).startTime?.toString() ??
                         DateTime.fromMillisecondsSinceEpoch(0)),
                 trailing: Icon(Icons.chevron_right),
                 onTap: () {
