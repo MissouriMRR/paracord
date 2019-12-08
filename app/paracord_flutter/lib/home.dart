@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql/internal.dart';
+import 'package:paracord_flutter/organizaiton.dart';
 import 'package:paracord_flutter/session.dart';
 import 'package:paracord_flutter/user.dart';
 import 'package:provider/provider.dart';
@@ -40,10 +41,6 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.search),
             onPressed: () {},
           ),
-          IconButton(
-            icon: Icon(Icons.tune),
-            onPressed: () {},
-          )
         ],
       ),
       body: Center(child: _buildSessionList()),
@@ -66,23 +63,20 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           Consumer<CurrentUserModel>(
             builder: (context, user, child) => UserAccountsDrawerHeader(
-              currentAccountPicture: CircleAvatar(
-                child: Text((user.currentUser?.email != null
-                        ? user.currentUser.email[0]?.toUpperCase()
-                        : null) ??
-                    'User\nNull'),
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.accents[
-                    (user.currentUser?.email?.hashCode ?? 0) %
-                        Colors.accents.length],
-              ),
+              currentAccountPicture: user.currentUser.avatar,
               accountName: Text(user.currentUser?.email ?? ''),
               accountEmail: Text(user.currentUser?.password ?? ''),
             ),
           ),
           ListTile(
             title: Text('Organizations'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OrganizationListPage(),
+                  ));
+            },
           ),
           ListTile(
             title: Text('Logout'),
