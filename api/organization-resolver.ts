@@ -13,6 +13,29 @@ export class OrganizationResolver {
 		return this.orgRepo.find()
 	}
 
+	@Query(() => Int)
+	protected async count_users(
+		@Arg("id", () => Int) id: number,
+	): Promise<number> {
+		const org: Organization = await this.orgRepo.findOneOrFail({
+			id: id
+		})
+		const users: User[] = await org.users
+		return users.length
+	}
+
+	@Mutation(() => Organization)
+	protected async changeOrganizationName(
+		@Arg("id", () => Int) id: number,
+		@Arg("name", () => String) name: string 
+	): Promise<Organization> {
+		let org : Organization = await this.orgRepo.findOneOrFail({
+			id: id
+		})
+		org.name = name
+		return org.save()
+	}
+
 	@Mutation(() => Organization)
 	protected async createOrganization(
 		@Arg("name", () => String) name: string 
@@ -30,7 +53,8 @@ export class OrganizationResolver {
 	): Promise<boolean> {
 		await this.orgRepo.delete({
 			id: id
-		});
+		})
 		return true
 	}
+
 }
