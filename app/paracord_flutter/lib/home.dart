@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> {
             builder: (context, user, child) => UserAccountsDrawerHeader(
               currentAccountPicture: user.currentUser.avatar,
               accountName: Text(user.currentUser?.email ?? ''),
-              accountEmail: Text(user.currentUser?.password ?? ''),
+              
             ),
           ),
           ListTile(
