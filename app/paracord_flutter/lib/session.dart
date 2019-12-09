@@ -5,10 +5,13 @@ import 'package:paracord_flutter/drone.dart';
 import 'package:paracord_flutter/flight.dart';
 import 'package:paracord_flutter/graphQL.dart';
 import 'package:paracord_flutter/transition.dart';
+import 'package:paracord_flutter/user.dart';
+import 'package:provider/provider.dart';
 
 class Session {
   static final String _queryName = "sessions";
-  static final String _queryArgs = "id,purpose,startTime,description";
+  static final String _queryArgs =
+      "id,purpose,startTime,description,endTime,location,terrain,weather,outcome";
   static final String _queryDocument = "query{$_queryName{$_queryArgs}}";
 
   static Future<Iterable<Session>> fetchSessions() async {
@@ -32,6 +35,10 @@ class Session {
       variables: <String, dynamic>{
         "purpose": session.purpose,
         "description": session.description,
+        "userid": session.userId,
+        "terrain": session.terrain,
+        "weather": session.weather,
+        "location": session.location,
       },
     ).options);
     if (result.hasErrors) throw result.errors;
@@ -56,14 +63,14 @@ class Session {
     return session;
   }
 
-  String id;
+  int id;
   String purpose;
   DateTime startTime;
   DateTime endTime;
   String description;
-  String droneId;
+  int droneId;
   String outcome;
-  String userId;
+  int userId;
   String location;
   String weather;
   String terrain;
@@ -86,7 +93,8 @@ class Session {
         id: data['id'],
         purpose: data['purpose'],
         startTime: DateTime.parse(data['startTime']),
-        endTime: DateTime.parse(data['endTime']),
+        endTime:
+            data['endTime'] != null ? DateTime.parse(data['endTime']) : null,
         description: data['description'],
         droneId: data['droneId'],
         outcome: data['outcome'],
@@ -97,7 +105,14 @@ class Session {
       );
 
   /// true if all fields required to post are non-null
-  get validPost => purpose != null && description != null && droneId != null;
+  get validPost =>
+      userId != null &&
+      purpose != null &&
+      description != null &&
+      droneId != null &&
+      location != null &&
+      weather != null &&
+      terrain != null;
 }
 
 class SessionPage extends StatefulWidget {
@@ -131,40 +146,75 @@ class _SessionPageState extends State<SessionPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.session.purpose),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: [
-            Tab(text: 'DETAILS'),
-            Tab(text: 'FLIGHTS'),
-          ],
+    return new WillPopScope(
+      onWillPop: () async {
+        if (widget.session.endTime == null) {
+          return await showDialog(
+                context: context,
+                builder: (context) => new AlertDialog(
+                  title: new Text('Are you sure?'),
+                  content: new Text('Do you want to end this session?'),
+                  actions: <Widget>[
+                    new FlatButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: new Text('No'),
+                    ),
+                    new FlatButton(
+                      onPressed: () async {
+                        bool value = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EndSessionPage(
+                              session: widget.session,
+                            ),
+                          ),
+                        );
+                        Navigator.of(context).pop(value);
+                      },
+                      child: new Text('Yes'),
+                    ),
+                  ],
+                ),
+              ) ??
+              false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.session.purpose),
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: [
+              Tab(text: 'DETAILS'),
+              Tab(text: 'FLIGHTS'),
+            ],
+          ),
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [_buildDetailsTab(), _buildFlightList()],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          switch (_tabController.index) {
-            case 0:
-              // TODO edit page
-              break;
-            case 1:
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => NewFlightPage()));
-              break;
-          }
-        },
-        tooltip: 'TODO',
-        child: SwapTransition(
-          progress: _tabController.animation,
-          children: [
-            Icon(Icons.edit),
-            Icon(Icons.add),
-          ],
+        body: TabBarView(
+          controller: _tabController,
+          children: [_buildDetailsTab(), _buildFlightList()],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            switch (_tabController.index) {
+              case 0:
+                // TODO edit page
+                break;
+              case 1:
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => NewFlightPage()));
+                break;
+            }
+          },
+          tooltip: 'TODO',
+          child: SwapTransition(
+            progress: _tabController.animation,
+            children: [
+              Icon(Icons.edit),
+              Icon(Icons.add),
+            ],
+          ),
         ),
       ),
     );
@@ -182,10 +232,35 @@ class _SessionPageState extends State<SessionPage>
           title: Text("Description"),
           subtitle: Text(widget.session.description),
         ),
+        widget.session.outcome != null
+            ? ListTile(
+                title: Text("Outcome"),
+                subtitle: Text(widget.session.outcome),
+              )
+            : Divider(),
+        ListTile(
+          title: Text("Start Time"),
+          subtitle: Text(widget.session.startTime.toString()),
+        ),
+        widget.session.endTime != null
+            ? ListTile(
+                title: Text("End Time"),
+                subtitle: Text(widget.session.endTime.toString()),
+              )
+            : Divider(),
+        ListTile(
+          title: Text("Location"),
+          subtitle: Text(widget.session.location),
+        ),
         Divider(),
         ListTile(
-          title: Text("Date"),
-          subtitle: Text(widget.session.startTime.toString()),
+          title: Text("Weather"),
+          subtitle: Text(widget.session.weather),
+        ),
+        Divider(),
+        ListTile(
+          title: Text("Terrain"),
+          subtitle: Text(widget.session.terrain),
         )
       ],
     );
@@ -245,7 +320,10 @@ class _NewSessionPageState extends State<NewSessionPage> {
   void initState() {
     super.initState();
     _drones = Drone.fetchDrones();
-    _session = Session();
+    _session = Session(
+      userId:
+          Provider.of<CurrentUserModel>(context, listen: false).currentUser.id,
+    );
 
     _purposeController.addListener(() {
       _session.purpose = _purposeController.text;
@@ -273,7 +351,7 @@ class _NewSessionPageState extends State<NewSessionPage> {
           children: <Widget>[
             ListTile(
               title: InputDecorator(
-                isEmpty: _session.userId == null,
+                isEmpty: _session.droneId == null,
                 decoration: InputDecoration(labelText: 'Drone'),
                 child: FutureBuilder<Iterable<Drone>>(
                   future: _drones,
@@ -281,14 +359,14 @@ class _NewSessionPageState extends State<NewSessionPage> {
                     if (!snapshot.hasData) return Text('Loading...');
                     if (snapshot.data.isEmpty)
                       return Text('No Drones Available');
-                    List<DropdownMenuItem<String>> droneItems =
+                    List<DropdownMenuItem<int>> droneItems =
                         snapshot.requireData
                             .map((drone) => DropdownMenuItem(
                                   value: drone.id,
                                   child: Text(drone.name),
                                 ))
                             .toList();
-                    return DropdownButton<String>(
+                    return DropdownButton<int>(
                       isDense: true,
                       value: _session.droneId,
                       onChanged: (newValue) {
@@ -352,6 +430,63 @@ class _NewSessionPageState extends State<NewSessionPage> {
                 MaterialPageRoute(
                     builder: (context) => SessionPage(session: _session)),
               );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class EndSessionPage extends StatefulWidget {
+  final Session session;
+
+  EndSessionPage({Key key, @required this.session})
+      : assert(session != null),
+        super(key: key);
+
+  _EndSessionPageState createState() => _EndSessionPageState();
+}
+
+class _EndSessionPageState extends State<EndSessionPage> {
+  final _outcomeController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _outcomeController.addListener(() {
+      widget.session.outcome = _outcomeController.text;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Ending Session')),
+      body: ListView(
+        children: <Widget>[
+          ListTile(
+            title: TextField(
+              controller: _outcomeController,
+              decoration: InputDecoration(labelText: 'Outcome'),
+              maxLines: null,
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: Builder(
+        builder: (context) {
+          return FloatingActionButton(
+            child: Icon(Icons.save),
+            onPressed: () async {
+              if (widget.session.outcome?.isEmpty ?? true) {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text("Please complete all required fields"),
+                ));
+                return;
+              }
+              await Session.endSession(widget.session);
+              Navigator.pop(context, true);
             },
           );
         },

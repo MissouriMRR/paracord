@@ -10,7 +10,9 @@ final client = GraphQLClient(
 );
 
 String getGraphQLType(dynamic value) {
-  if (value is String) {
+  if (value == null) {
+    throw "value is null";
+  } else if (value is String) {
     return "String";
   } else if (value is int) {
     return "Int";
