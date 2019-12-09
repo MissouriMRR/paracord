@@ -5,10 +5,11 @@ import 'package:paracord_flutter/drone.dart';
 import 'package:paracord_flutter/graphQL.dart';
 import 'package:paracord_flutter/transition.dart';
 import 'package:paracord_flutter/user.dart';
+import 'package:provider/provider.dart';
 
 class Organization {
   static final String _queryName = "organizations";
-  static final String _queryArgs = "id,name,users{id,email}";
+  static final String _queryArgs = "id,name,users{id,email},drones{id,name}";
   static final String _queryDocument = "query{$_queryName{$_queryArgs}}";
 
   static Future<Iterable<Organization>> fetchOrganizations() async {
@@ -29,22 +30,42 @@ class Organization {
     final String mutationName = "createOrganization";
     QueryResult result = await client.mutate(MutationOptionsWrapper(
       mutationName: mutationName,
-      queries: ["id"],
+      queries: ["id", "name"],
       variables: <String, dynamic>{"name": organization.name},
     ).options);
     if (result.hasErrors) throw result.errors;
-    organization.id = result.data[mutationName]['id'];
+    organization = Organization.fromMap(result.data);
+    organization.users = [];
+    organization.drones = [];
     return organization;
   }
+
+  static Future<void> addUserToOrganization(
+      Organization organization, User user) async {
+    final String mutationName = "addUserToOrganization";
+    QueryResult result = await client.mutate(MutationOptionsWrapper(
+      mutationName: mutationName,
+      queries: ["id"],
+      variables: <String, dynamic>{
+        "orgid": organization.id,
+        "userid": user.id,
+      },
+    ).options);
+    if (result.hasErrors) throw result.errors;
+  }
+
+  
 
   int id;
   String name;
   List<User> users;
+  List<Drone> drones;
 
   Organization({
     this.id,
     this.name,
     this.users,
+    this.drones,
   });
 
   factory Organization.fromMap(Map<String, dynamic> data) => Organization(
@@ -52,6 +73,9 @@ class Organization {
         name: data['name'],
         users: (data['users'] as List<dynamic>)
             .map((userData) => User.fromMap(userData))
+            .toList(),
+        drones: (data['drones'] as List<dynamic>)
+            .map((droneData) => Drone.fromMap(droneData))
             .toList(),
       );
 
@@ -61,8 +85,9 @@ class Organization {
 
 class OrganizationPage extends StatefulWidget {
   final Organization organization;
+  final int initialTab;
 
-  OrganizationPage({Key key, @required this.organization})
+  OrganizationPage({Key key, @required this.organization, this.initialTab})
       : assert(organization != null),
         super(key: key);
 
@@ -72,15 +97,16 @@ class OrganizationPage extends StatefulWidget {
 class _OrganizationPageState extends State<OrganizationPage>
     with SingleTickerProviderStateMixin {
   Iterable<User> _users;
-  Future<Iterable<Drone>> _drones;
+  Iterable<Drone> _drones;
   TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: 2);
+    _tabController.index = widget.initialTab ?? 0;
     _users = widget.organization.users;
-    _drones = Drone.fetchDrones(); // TODO org drones
+    _drones = widget.organization.drones;
   }
 
   @override
@@ -109,6 +135,55 @@ class _OrganizationPageState extends State<OrganizationPage>
           Center(child: _buildDronesTab()),
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          switch (_tabController.index) {
+            case 0:
+              if (widget.organization.users.any((user) =>
+                  user.id ==
+                  Provider.of<CurrentUserModel>(context, listen: false)
+                      .currentUser
+                      .id)) {
+                  //TODO LEAVE
+              } else {
+                Organization.addUserToOrganization(
+                    widget.organization,
+                    Provider.of<CurrentUserModel>(context, listen: false)
+                        .currentUser);
+
+                setState(() {
+                  widget.organization.users.add(
+                      Provider.of<CurrentUserModel>(context, listen: false)
+                          .currentUser);
+                });
+              }
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      NewDronePage(organization: widget.organization),
+                ),
+              );
+              break;
+          }
+        },
+        icon: Icon(Icons.add),
+        label: SwapTransition(
+          progress: _tabController.animation,
+          children: [
+            widget.organization.users.any((user) =>
+                    user.id ==
+                    Provider.of<CurrentUserModel>(context, listen: false)
+                        .currentUser
+                        .id)
+                ? Text('LEAVE')
+                : Text('JOIN'),
+            Text('ADD')
+          ],
+        ),
+      ),
     );
   }
 
@@ -129,27 +204,18 @@ class _OrganizationPageState extends State<OrganizationPage>
   }
 
   Widget _buildDronesTab() {
-    return FutureBuilder<Iterable<Drone>>(
-      future: _drones,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return ListView.separated(
-            itemCount: snapshot.data.length,
-            itemBuilder: (context, index) => ListTile(
-              title: Text(
-                snapshot.data.elementAt(index).name,
-                maxLines: 1,
-                softWrap: false,
-                overflow: TextOverflow.ellipsis,
-              ),
-              subtitle: Text("Lorem ipsum dolor sit amet."),
-              trailing: Icon(Icons.chevron_right),
-            ),
-            separatorBuilder: (context, index) => Divider(),
-          );
-        }
-        return CircularProgressIndicator();
-      },
+    return ListView.separated(
+      itemCount: _drones.length,
+      itemBuilder: (context, index) => ListTile(
+        title: Text(
+          _drones.elementAt(index).name ?? "error",
+          maxLines: 1,
+          softWrap: false,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: Icon(Icons.chevron_right),
+      ),
+      separatorBuilder: (context, index) => Divider(),
     );
   }
 }
@@ -274,7 +340,7 @@ class _NewOrganizationPageState extends State<NewOrganizationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('New Session')),
+      appBar: AppBar(title: Text('New Organization')),
       body: DropdownButtonHideUnderline(
         child: ListView(
           children: <Widget>[
