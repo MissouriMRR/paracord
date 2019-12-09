@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 class Session {
   static final String _queryName = "sessions";
   static final String _queryArgs =
-      "id,purpose,startTime,description,endTime,location,terrain,weather,outcome";
+      "id,purpose,startTime,description,endTime,location,terrain,weather,outcome,flights{id,purpose,description,startTime,endTime}";
   static final String _queryDocument = "query{$_queryName{$_queryArgs}}";
 
   static Future<Iterable<Session>> fetchSessions() async {
@@ -44,6 +44,7 @@ class Session {
     if (result.hasErrors) throw result.errors;
     session.id = result.data[mutationName]['id'];
     session.startTime = DateTime.parse(result.data[mutationName]['startTime']);
+    session.flights = [];
     return session;
   }
 
@@ -74,6 +75,7 @@ class Session {
   String location;
   String weather;
   String terrain;
+  List<Flight> flights;
 
   Session({
     this.id,
@@ -87,6 +89,7 @@ class Session {
     this.location,
     this.weather,
     this.terrain,
+    this.flights,
   });
 
   factory Session.fromMap(Map<String, dynamic> data) => Session(
@@ -102,6 +105,9 @@ class Session {
         location: data['location'],
         weather: data['weather'],
         terrain: data['terrain'],
+        flights: (data['flights'] as List<dynamic>)
+            .map((flightData) => Flight.fromMap(flightData))
+            .toList(),
       );
 
   /// true if all fields required to post are non-null
@@ -117,8 +123,9 @@ class Session {
 
 class SessionPage extends StatefulWidget {
   final Session session;
+  final int initialTab;
 
-  SessionPage({Key key, @required this.session})
+  SessionPage({Key key, @required this.session, this.initialTab = 0})
       : assert(session != null),
         super(key: key);
 
@@ -128,14 +135,15 @@ class SessionPage extends StatefulWidget {
 
 class _SessionPageState extends State<SessionPage>
     with SingleTickerProviderStateMixin {
-  Future<Iterable<Flight>> _flights;
+  Iterable<Flight> _flights;
   TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(vsync: this, length: 2);
-    _flights = fetchFlights();
+    _tabController = TabController(vsync: this, length: 2)
+      ..index = widget.initialTab;
+    _flights = widget.session.flights;
   }
 
   @override
@@ -200,10 +208,16 @@ class _SessionPageState extends State<SessionPage>
             switch (_tabController.index) {
               case 0:
                 // TODO edit page
+                print("Sorry, this doesnt work yet");
                 break;
               case 1:
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => NewFlightPage()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        NewFlightPage(session: widget.session),
+                  ),
+                );
                 break;
             }
           },
@@ -267,35 +281,27 @@ class _SessionPageState extends State<SessionPage>
   }
 
   Widget _buildFlightList() {
-    return FutureBuilder<Iterable<Flight>>(
-      future: _flights,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return ListView.separated(
-            itemCount: snapshot.data.length,
-            itemBuilder: (context, index) => ListTile(
-              title: Text(
-                snapshot.data.elementAt(index).title,
-                maxLines: 1,
-                softWrap: false,
-                overflow: TextOverflow.ellipsis,
-              ),
-              subtitle: Text("Lorem ipsum dolor sit amet."),
-              trailing: Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          FlightPage(flight: snapshot.data.elementAt(index))),
-                );
-              },
-            ),
-            separatorBuilder: (context, index) => Divider(),
+    return ListView.separated(
+      itemCount: _flights.length,
+      itemBuilder: (context, index) => ListTile(
+        title: Text(
+          _flights.elementAt(index).purpose,
+          maxLines: 1,
+          softWrap: false,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Text(_flights.elementAt(index).startTime.toString()),
+        trailing: Icon(Icons.chevron_right),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    FlightPage(flight: _flights.elementAt(index))),
           );
-        }
-        return CircularProgressIndicator();
-      },
+        },
+      ),
+      separatorBuilder: (context, index) => Divider(),
     );
   }
 }

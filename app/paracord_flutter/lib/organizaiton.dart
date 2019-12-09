@@ -54,8 +54,6 @@ class Organization {
     if (result.hasErrors) throw result.errors;
   }
 
-  
-
   int id;
   String name;
   List<User> users;
@@ -144,7 +142,8 @@ class _OrganizationPageState extends State<OrganizationPage>
                   Provider.of<CurrentUserModel>(context, listen: false)
                       .currentUser
                       .id)) {
-                  //TODO LEAVE
+                //TODO Leave organization
+                print("Sorry, this dosent work yet");
               } else {
                 Organization.addUserToOrganization(
                     widget.organization,

@@ -97,9 +97,10 @@ class User {
   }
 
   CircleAvatar get avatar => CircleAvatar(
-        child: Text(this?.email[0]?.toUpperCase() ?? 'User\nNull'),
+        child: Text(
+            this?.email != null ? this.email[0].toUpperCase() : 'User\nNull'),
         foregroundColor: Colors.white,
-        backgroundColor:
-            Colors.accents[(this?.email?.hashCode ?? 0) % Colors.accents.length],
+        backgroundColor: Colors
+            .accents[(this?.email?.hashCode ?? 0) % Colors.accents.length],
       );
 }
