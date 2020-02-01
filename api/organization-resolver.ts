@@ -1,12 +1,12 @@
 import { Query, Resolver, Mutation, Arg, Int } from "type-graphql"
-import { Repository, getRepository} from "typeorm"
+import { Repository, getRepository, getConnection} from "typeorm"
 import { Organization } from "./organization"
 import { User } from "./user"
 
 @Resolver(() => Organization)
 export class OrganizationResolver {
-	public orgRepo: Repository<Organization> = getRepository(Organization) 
-	public userRepo: Repository<User> = getRepository(User)
+	public orgRepo: Repository<Organization> = getConnection().getRepository(Organization) 
+	public userRepo: Repository<User> = getConnection().getRepository(User)
 
 	@Query(() => [Organization])
 	protected async organizations(): Promise<Organization[]> {
