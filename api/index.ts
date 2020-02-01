@@ -17,7 +17,9 @@ console.log('Connecting to database')
 createConnection().then(async connection => {
 
 	console.log('Building schemas')
-	const gqlschema = await buildSchema({ resolvers: [DroneResolver, OrganizationResolver, UserResolver, SessionResolver, FlightResolver]})
+	//const gqlschema = await buildSchema({resolvers: [DroneResolver, OrganizationResolver, UserResolver, SessionResolver, FlightResolver]})
+	const gqlschema = await buildSchema({
+	resolvers: [`${__dirname}/**/*resolver.ts`]})
 
 	console.log('Creating express app')
 	const app = express()
@@ -27,7 +29,7 @@ createConnection().then(async connection => {
 	const server = new ApolloServer({ schema: gqlschema })
 	server.applyMiddleware({ app, path: '/graphql' })
 
-	console.log('Starting http server')
+	console.log('Starting http server. Hold on to your potatoes!')
 	const httpServer = createServer(app)
 	httpServer.listen({ port: port })
 
