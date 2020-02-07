@@ -29,7 +29,6 @@ export class FlightResolver {
 	protected async returnFlightByID(
 		@Arg("id", () => Int) id: number
 	): Promise<Flight> {
-
 		return this.flightRepo.findOneOrFail({
 			id: id
 		})
@@ -37,22 +36,23 @@ export class FlightResolver {
 
 	@Mutation(() => Flight)
 	protected async createFlight(
-		@Arg("purpose", () => String) purpose: string,
-		@Arg("description", () => String) description: string,
-		@Arg("sessionid", () => Int) sessionid: number
+		@Arg("purpose", () => String) purpose: string
 	): Promise<Flight> {
-
-		let session: Session = await this.sessionRepo.findOneOrFail({
-			id: sessionid
-		})
-
 		let flight: Flight = this.flightRepo.create({
-			purpose: purpose,
-			description: description,
-			outcome: "",
-			session: session
+			purpose: purpose
 		})
+		return flight.save()
+	}
 
+	@Mutation(() => Flight)
+	protected async addFlightDescription(
+		@Arg("id", () => Int) id: number,
+		@Arg("description", () => String) description: string
+	): Promise<Flight> {
+		let flight : Flight = await this.flightRepo.findOneOrFail({
+			id: id
+		})
+		flight.description = description
 		return flight.save()
 	}
 

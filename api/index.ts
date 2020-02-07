@@ -5,11 +5,12 @@ import { createServer } from 'http'
 import "reflect-metadata"
 import { buildSchema } from "type-graphql"
 import { createConnection } from "typeorm"
-import { DroneResolver } from "./drone-resolver"
-import { OrganizationResolver } from "./organization-resolver"
-import { UserResolver } from './user-resolver'
-import { SessionResolver } from './session-resolver'
-import { FlightResolver } from './flight-resolver'
+
+
+//import { DroneResolver } from "./drone-resolver"
+//import { UserResolver } from './user-resolver'
+//import { SessionResolver } from './session-resolver'
+//import { FlightResolver } from './flight-resolver'
 
 const port = 3000
 

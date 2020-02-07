@@ -8,7 +8,6 @@
 	"synchronize": true,
 	"entities": [
 		"./drone.ts",
-		"./organization.ts",
 		"./user.ts",
 		"./session.ts",
 		"./flight.ts"
