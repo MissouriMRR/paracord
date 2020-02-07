@@ -1,11 +1,9 @@
 import { Query, Resolver, Mutation, Arg, Int} from "type-graphql"
 import { Repository, getRepository} from "typeorm"
 import { User } from "./user"
-import { Organization } from "./organization"
 
 @Resolver(() => User)
 export class UserResolver {
-	public orgRepo: Repository<Organization> = getRepository(Organization)
     public userRepo: Repository<User> = getRepository(User)
 
 	@Query(() => [User])
@@ -62,26 +60,8 @@ export class UserResolver {
 	): Promise<User> {
 		const user : User = this.userRepo.create({
 			email: email,
-			password: password, 
-			organizations: []
+			password: password
 		})
-		return user.save()
-	}
-
-	@Mutation(() => User)
-	protected async addUserToOrganization (
-		@Arg("userid", () => Int) userid: number,
-		@Arg("orgid", () => Int) orgid: number
-	): Promise<User> {
-		let organization : Organization = await this.orgRepo.findOneOrFail({id: orgid})
-		let user : User = await this.userRepo.findOneOrFail({id : userid})
-		let userOrgs : Organization[] = await user.organizations
-		if(userOrgs) {
-			userOrgs.push(organization)
-		} else {
-			userOrgs = [organization]
-		} 
-		user.organizations = userOrgs
 		return user.save()
 	}
 	

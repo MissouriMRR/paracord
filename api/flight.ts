@@ -2,7 +2,6 @@ import { Field, ObjectType, Int} from "type-graphql"
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, JoinTable } from "typeorm"
 import { Lazy } from "./helpers"
 import { Session } from "./session"
-import { User } from "./user"
 
 @ObjectType()
 @Entity()
@@ -11,27 +10,27 @@ export class Flight extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Field()
-    @Column()
+    @Field({ nullable: true })
+    @Column({ nullable: true })
     purpose: string
 
-    @Field()
-    @CreateDateColumn()
+    @Field({ nullable: true })
+    @CreateDateColumn({ nullable: true })
     startTime: Date
 
-    @Field()
-    @UpdateDateColumn()
+    @Field({ nullable: true })
+    @UpdateDateColumn({ nullable: true })
     endTime: Date
 
-    @Field()
-    @Column()
+    @Field({ nullable: true })
+    @Column({ nullable: true })
     description: string
 
-    @Field()
+    @Field({ nullable: true })
     @Column({nullable : true})
     outcome: string
 
-    @Field(() => Session)
+    @Field(() => Session, { nullable: true })
     @ManyToOne(() => Session, (session: Session) => session.flights, { nullable : true, lazy: true })
     session: Lazy<Session>
 }
