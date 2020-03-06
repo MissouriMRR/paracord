@@ -10,7 +10,7 @@ import {
     ManyToOne,
     JoinTable,
 } from "typeorm"
-import { Lazy } from "./helpers"
+import { Lazy } from "../helpers"
 import { Session } from "./session"
 
 @ObjectType()
@@ -20,49 +20,27 @@ export class Flight extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Field({
-        nullable: true,
-    })
-    @Column({
-        nullable: true,
-    })
+    @Field({ nullable: true })
+    @Column({ nullable: true })
     purpose: string
 
-    @Field({
-        nullable: true,
-    })
-    @CreateDateColumn({
-        nullable: true,
-    })
+    @Field({ nullable: true })
+    @CreateDateColumn({ nullable: true })
     startTime: Date
 
-    @Field({
-        nullable: true,
-    })
-    @UpdateDateColumn({
-        nullable: true,
-    })
+    @Field({ nullable: true })
+    @UpdateDateColumn({ nullable: true })
     endTime: Date
 
-    @Field({
-        nullable: true,
-    })
-    @Column({
-        nullable: true,
-    })
+    @Field({ nullable: true })
+    @Column({ nullable: true })
     description: string
 
-    @Field({
-        nullable: true,
-    })
-    @Column({
-        nullable: true,
-    })
+    @Field({ nullable: true })
+    @Column({ nullable: true })
     outcome: string
 
-    @Field(() => Session, {
-        nullable: true,
-    })
+    @Field(() => Session, { nullable: true })
     @ManyToOne(
         () => Session,
         (session: Session) => session.flights,

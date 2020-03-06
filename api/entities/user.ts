@@ -9,7 +9,7 @@ import {
     OneToMany,
 } from "typeorm"
 import { Session } from "./session"
-import { Lazy } from "./helpers"
+import { Lazy } from "../helpers"
 
 @ObjectType()
 @Entity()

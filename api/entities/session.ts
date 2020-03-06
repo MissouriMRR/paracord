@@ -10,7 +10,7 @@ import {
     OneToMany,
     JoinTable,
 } from "typeorm"
-import { Lazy } from "./helpers"
+import { Lazy } from "../helpers"
 import { Flight } from "./flight"
 import { User } from "./user"
 import { Drone } from "./drone"
@@ -22,20 +22,20 @@ export class Session extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Field()
-    @Column()
+    @Field({ nullable: true })
+    @Column({ nullable: true })
     purpose: string
 
-    @Field()
-    @Column()
+    @Field({ nullable: true })
+    @Column({ nullable: true })
     location: string
 
-    @Field()
-    @Column()
+    @Field({ nullable: true })
+    @Column({ nullable: true })
     terrain: string
 
-    @Field()
-    @Column()
+    @Field({ nullable: true })
+    @Column({ nullable: true })
     weather: string
 
     @Field()
@@ -46,14 +46,12 @@ export class Session extends BaseEntity {
     @UpdateDateColumn()
     endTime: Date
 
-    @Field()
-    @Column()
+    @Field({ nullable: true })
+    @Column({ nullable: true })
     description: string
 
-    @Field()
-    @Column({
-        nullable: true,
-    })
+    @Field({ nullable: true })
+    @Column({ nullable: true })
     outcome: string
 
     @Field(() => [Flight])
