@@ -1,7 +1,7 @@
 import { Query, Resolver, Mutation, Arg, Int } from "type-graphql"
 import { Repository, getRepository } from "typeorm"
-import { Session } from "./session"
-import { User } from "./user"
+import { Session } from "../entities/session"
+import { User } from "../entities/user"
 
 @Resolver(() => Session)
 export class SessionResolver {
