@@ -1,10 +1,18 @@
-import React from 'react';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
+import SessionsScreen from '../screens/SessionsScreen.js'
+import FlightsScreen from '../screens/FlightsScreen.js'
+import FlightDetailsScreen from '../screens/FlightDetailsScreen.js'
+import NewSessionScreen from '../screens/NewSessionScreen.js'
+import NewFlightScreen from '../screens/NewFlightScreen.js'
 
-import MainTabNavigator from './MainTabNavigator';
-
-export default createAppContainer(createSwitchNavigator({
-  // You could add another route here for authentication.
-  // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-  Main: MainTabNavigator,
-}));
+export default createAppContainer(createStackNavigator(
+	{
+		Sessions: SessionsScreen, 
+		NewSession: NewSessionScreen,
+		Flights: FlightsScreen,
+		NewFlight: NewFlightScreen,
+		FlightDetails: FlightDetailsScreen
+	},
+	{
+		initialRouteName: 'Sessions'
+	}));

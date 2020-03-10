@@ -7,10 +7,9 @@
 	"password": "paracord",
 	"synchronize": true,
 	"entities": [
-		"./drone.js",
-		"./organization.js",
-		"./user.js",
-		"./session.js",
-		"./flight.js"
+		"./entities/drone.ts",
+		"./entities/user.ts",
+		"./entities/session.ts",
+		"./entities/flight.ts"
 	]
 }
