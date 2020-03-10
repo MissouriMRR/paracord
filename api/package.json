@@ -1,6 +1,11 @@
 {
 	"name": "gql_e1",
 	"version": "1.0.1",
+	"repository": {
+		"url": "https://github.com/MissouriMRR/paracord.git",
+		"directory": "api",
+		"type": "git"
+	},
 	"private": false,
 	"main": "./index.ts",
 	"scripts": {
@@ -12,6 +17,7 @@
 		"express-graphql": "^0.9.0",
 		"graphql": "^14.5.8",
 		"pg": "^7.12.1",
+		"ts-node": "^8.6.2",
 		"type-graphql": "^0.17.5",
 		"typedi": "^0.8.0",
 		"typeorm": "^0.2.19",
