@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:graphql/internal.dart';
-import 'package:paracord_flutter/organizaiton.dart';
 import 'package:paracord_flutter/session.dart';
 import 'package:paracord_flutter/user.dart';
 import 'package:provider/provider.dart';
@@ -67,16 +66,6 @@ class _HomePageState extends State<HomePage> {
               accountName: Text(user.currentUser?.email ?? ''),
               
             ),
-          ),
-          ListTile(
-            title: Text('Organizations'),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => OrganizationListPage(),
-                  ));
-            },
           ),
           ListTile(
             title: Text('Logout'),

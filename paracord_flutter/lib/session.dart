@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:graphql/client.dart';
 import 'package:graphql/internal.dart';
-import 'package:paracord_flutter/drone.dart';
-import 'package:paracord_flutter/flight.dart';
+import 'package:paracord_flutter/frame.dart';
+import 'package:paracord_flutter/mission.dart';
 import 'package:paracord_flutter/graphQL.dart';
 import 'package:paracord_flutter/transition.dart';
 import 'package:paracord_flutter/user.dart';
@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 class Session {
   static final String _queryName = "sessions";
   static final String _queryArgs =
-      "id,purpose,startTime,description,endTime,location,terrain,weather,outcome,flights{id,purpose,description,startTime,endTime}";
+      "id,purpose,startTime,description,endTime,location,terrain,weather,outcome,missions{id,purpose,description,startTime,endTime}";
   static final String _queryDocument = "query{$_queryName{$_queryArgs}}";
 
   static Future<Iterable<Session>> fetchSessions() async {
@@ -44,7 +44,7 @@ class Session {
     if (result.hasErrors) throw result.errors;
     session.id = result.data[mutationName]['id'];
     session.startTime = DateTime.parse(result.data[mutationName]['startTime']);
-    session.flights = [];
+    session.missions = [];
     return session;
   }
 
@@ -69,13 +69,13 @@ class Session {
   DateTime startTime;
   DateTime endTime;
   String description;
-  int droneId;
+  int frameId;
   String outcome;
   int userId;
   String location;
   String weather;
   String terrain;
-  List<Flight> flights;
+  List<Mission> missions;
 
   Session({
     this.id,
@@ -83,13 +83,13 @@ class Session {
     this.startTime,
     this.endTime,
     this.description,
-    this.droneId,
+    this.frameId,
     this.outcome,
     this.userId,
     this.location,
     this.weather,
     this.terrain,
-    this.flights,
+    this.missions,
   });
 
   factory Session.fromMap(Map<String, dynamic> data) => Session(
@@ -99,14 +99,14 @@ class Session {
         endTime:
             data['endTime'] != null ? DateTime.parse(data['endTime']) : null,
         description: data['description'],
-        droneId: data['droneId'],
+        frameId: data['frameId'],
         outcome: data['outcome'],
         userId: data['userId'],
         location: data['location'],
         weather: data['weather'],
         terrain: data['terrain'],
-        flights: (data['flights'] as List<dynamic>)
-            .map((flightData) => Flight.fromMap(flightData))
+        missions: (data['missions'] as List<dynamic>)
+            .map((missionData) => Mission.fromMap(missionData))
             .toList(),
       );
 
@@ -115,7 +115,7 @@ class Session {
       userId != null &&
       purpose != null &&
       description != null &&
-      droneId != null &&
+      frameId != null &&
       location != null &&
       weather != null &&
       terrain != null;
@@ -135,7 +135,7 @@ class SessionPage extends StatefulWidget {
 
 class _SessionPageState extends State<SessionPage>
     with SingleTickerProviderStateMixin {
-  Iterable<Flight> _flights;
+  Iterable<Mission> _missions;
   TabController _tabController;
 
   @override
@@ -143,7 +143,7 @@ class _SessionPageState extends State<SessionPage>
     super.initState();
     _tabController = TabController(vsync: this, length: 2)
       ..index = widget.initialTab;
-    _flights = widget.session.flights;
+    _missions = widget.session.missions;
   }
 
   @override
@@ -195,13 +195,13 @@ class _SessionPageState extends State<SessionPage>
             controller: _tabController,
             tabs: [
               Tab(text: 'DETAILS'),
-              Tab(text: 'FLIGHTS'),
+              Tab(text: 'MISSIONS'),
             ],
           ),
         ),
         body: TabBarView(
           controller: _tabController,
-          children: [_buildDetailsTab(), _buildFlightList()],
+          children: [_buildDetailsTab(), _buildMissionList()],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -215,7 +215,7 @@ class _SessionPageState extends State<SessionPage>
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        NewFlightPage(session: widget.session),
+                        EditMissionPage(session: widget.session),
                   ),
                 );
                 break;
@@ -280,24 +280,24 @@ class _SessionPageState extends State<SessionPage>
     );
   }
 
-  Widget _buildFlightList() {
+  Widget _buildMissionList() {
     return ListView.separated(
-      itemCount: _flights.length,
+      itemCount: _missions.length,
       itemBuilder: (context, index) => ListTile(
         title: Text(
-          _flights.elementAt(index).purpose,
+          _missions.elementAt(index).purpose,
           maxLines: 1,
           softWrap: false,
           overflow: TextOverflow.ellipsis,
         ),
-        subtitle: Text(_flights.elementAt(index).startTime.toString()),
+        subtitle: Text(_missions.elementAt(index).startTime.toString()),
         trailing: Icon(Icons.chevron_right),
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    FlightPage(flight: _flights.elementAt(index))),
+                    MissionPage(mission: _missions.elementAt(index))),
           );
         },
       ),
@@ -314,7 +314,7 @@ class NewSessionPage extends StatefulWidget {
 class _NewSessionPageState extends State<NewSessionPage> {
   Session _session;
 
-  Future<Iterable<Drone>> _drones;
+  Future<Iterable<Frame>> _frames;
 
   final _purposeController = TextEditingController();
   final _locationController = TextEditingController();
@@ -325,7 +325,7 @@ class _NewSessionPageState extends State<NewSessionPage> {
   @override
   void initState() {
     super.initState();
-    _drones = Drone.fetchDrones();
+    _frames = Frame.fetchFrames();
     _session = Session(
       userId:
           Provider.of<CurrentUserModel>(context, listen: false).currentUser.id,
@@ -357,30 +357,30 @@ class _NewSessionPageState extends State<NewSessionPage> {
           children: <Widget>[
             ListTile(
               title: InputDecorator(
-                isEmpty: _session.droneId == null,
-                decoration: InputDecoration(labelText: 'Drone'),
-                child: FutureBuilder<Iterable<Drone>>(
-                  future: _drones,
+                isEmpty: _session.frameId == null,
+                decoration: InputDecoration(labelText: 'Frame'),
+                child: FutureBuilder<Iterable<Frame>>(
+                  future: _frames,
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) return Text('Loading...');
                     if (snapshot.data.isEmpty)
-                      return Text('No Drones Available');
-                    List<DropdownMenuItem<int>> droneItems =
+                      return Text('No Frames Available');
+                    List<DropdownMenuItem<int>> frameItems =
                         snapshot.requireData
-                            .map((drone) => DropdownMenuItem(
-                                  value: drone.id,
-                                  child: Text(drone.name),
+                            .map((frame) => DropdownMenuItem(
+                                  value: frame.id,
+                                  child: Text(frame.name),
                                 ))
                             .toList();
                     return DropdownButton<int>(
                       isDense: true,
-                      value: _session.droneId,
+                      value: _session.frameId,
                       onChanged: (newValue) {
                         setState(() {
-                          _session.droneId = newValue;
+                          _session.frameId = newValue;
                         });
                       },
-                      items: droneItems,
+                      items: frameItems,
                     );
                   },
                 ),
