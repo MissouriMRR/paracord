@@ -1,0 +1,15 @@
+{
+	"type": "postgres",
+	"host": "paracord_db",
+	
+	"port": "5432",
+	"username": "paracord",
+	"password": "paracord",
+	"synchronize": true,
+	"entities": [
+		"./entities/drone.ts",
+		"./entities/user.ts",
+		"./entities/session.ts",
+		"./entities/flight.ts"
+	]
+}

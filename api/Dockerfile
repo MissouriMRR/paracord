@@ -1,11 +1,8 @@
-FROM python:3-slim
+FROM node:latest
 
-COPY . /app
-WORKDIR /app
+COPY . /web
+WORKDIR /web
 
-EXPOSE 3000
+RUN npm install
 
-RUN pip3 install pipenv
-RUN pipenv install --system --deploy
-
-CMD python3 manage.py -c all && python3 run.py --host=0.0.0.0
+CMD npm start
