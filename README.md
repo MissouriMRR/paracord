@@ -31,6 +31,20 @@ The app can be run on any compatible android or iOS device directly from your ID
 For more information on your platform, follow the instuctions on [Flutter Docs](https://flutter.dev/docs/get-started/).  
 Be sure to check out Material Design's [Flutter tutorials](https://material.io/collections/developer-tutorials/#flutter) if you need help getting started!
 
+### Web Application
+
+Starting the Paracord web application
+
+To run the web application version of paracord you need to first start the server. See the [Server](#Server) section below to start the server.
+
+Now that the server is running, go to the `paracord/flutter` folder and run the following command.
+
+1. Starting the web application in Google Chrome.
+
+```bash
+$ flutter run -d chrome
+```
+
 ### Server
 In the `api` folder, run the following commands:
 
