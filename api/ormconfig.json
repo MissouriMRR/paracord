@@ -7,9 +7,6 @@
 	"password": "paracord",
 	"synchronize": true,
 	"entities": [
-		"./entities/drone.ts",
-		"./entities/user.ts",
-		"./entities/session.ts",
-		"./entities/flight.ts"
+		"./entities/*.ts"
 	]
 }
