@@ -14,6 +14,7 @@ services:
   
   paracord_web: 
     build: .
+    restart: always
     volumes:
       - .:/web
     ports: 
