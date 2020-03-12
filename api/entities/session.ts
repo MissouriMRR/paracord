@@ -11,9 +11,9 @@ import {
     JoinTable,
 } from "typeorm"
 import { Lazy } from "../helpers"
-import { Mission } from "./flight"
+import { Mission } from "./mission"
 import { User } from "./user"
-import { Frame } from "./drone"
+import { Frame } from "./frame"
 
 @ObjectType()
 @Entity()

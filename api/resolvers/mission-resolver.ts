@@ -1,6 +1,6 @@
 import { Query, Resolver, Mutation, Arg, Int } from "type-graphql"
 import { Repository, getRepository } from "typeorm"
-import { Mission } from "../entities/flight"
+import { Mission } from "../entities/mission"
 import { Session } from "../entities/session"
 
 @Resolver(() => Mission)

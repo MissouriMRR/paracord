@@ -1,6 +1,6 @@
 import { Query, Resolver, Mutation, Arg, Int } from "type-graphql"
 import { Repository, getRepository } from "typeorm"
-import { Frame } from "../entities/drone"
+import { Frame } from "../entities/frame"
 
 @Resolver(() => Frame)
 export class FrameResolver {
