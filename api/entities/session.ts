@@ -11,9 +11,9 @@ import {
     JoinTable,
 } from "typeorm"
 import { Lazy } from "../helpers"
-import { Flight } from "./flight"
+import { Mission } from "./flight"
 import { User } from "./user"
-import { Drone } from "./drone"
+import { Frame } from "./drone"
 
 @ObjectType()
 @Entity()
@@ -54,16 +54,16 @@ export class Session extends BaseEntity {
     @Column({ nullable: true })
     outcome: string
 
-    @Field(() => [Flight])
+    @Field(() => [Mission])
     @OneToMany(
-        () => Flight,
-        (flight: Flight) => flight.session,
+        () => Mission,
+        (mission: Mission) => mission.session,
         {
             nullable: true,
             lazy: true,
         },
     )
-    flights: Lazy<Flight[]>
+    missions: Lazy<Mission[]>
 
     @Field(() => User)
     @ManyToOne(

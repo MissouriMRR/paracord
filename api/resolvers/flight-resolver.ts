@@ -1,94 +1,94 @@
 import { Query, Resolver, Mutation, Arg, Int } from "type-graphql"
 import { Repository, getRepository } from "typeorm"
-import { Flight } from "../entities/flight"
+import { Mission } from "../entities/flight"
 import { Session } from "../entities/session"
 
-@Resolver(() => Flight)
-export class FlightResolver {
-    public flightRepo: Repository<Flight> = getRepository(Flight)
+@Resolver(() => Mission)
+export class MissionResolver {
+    public missionRepo: Repository<Mission> = getRepository(Mission)
     public sessionRepo: Repository<Session> = getRepository(Session)
 
-    @Query(() => [Flight])
-    protected async flights(): Promise<Flight[]> {
-        return this.flightRepo.find()
+    @Query(() => [Mission])
+    protected async missions(): Promise<Mission[]> {
+        return this.missionRepo.find()
     }
 
     @Mutation(() => Boolean)
-    protected async deleteFlightByID(
+    protected async deleteMissionByID(
         @Arg("id", () => Int)
         id: number,
     ): Promise<boolean> {
-        await this.flightRepo.delete({
+        await this.missionRepo.delete({
             id: id,
         })
 
         return true
     }
 
-    @Query(() => Flight)
-    protected async returnFlightByID(
+    @Query(() => Mission)
+    protected async returnMissionByID(
         @Arg("id", () => Int)
         id: number,
-    ): Promise<Flight> {
-        return this.flightRepo.findOneOrFail({
+    ): Promise<Mission> {
+        return this.missionRepo.findOneOrFail({
             id: id,
         })
     }
 
-    @Mutation(() => Flight)
-    protected async createFlight(
+    @Mutation(() => Mission)
+    protected async createMission(
         @Arg("purpose", () => String)
         purpose: string,
-    ): Promise<Flight> {
-        let flight: Flight = this.flightRepo.create({
+    ): Promise<Mission> {
+        let mission: Mission = this.missionRepo.create({
             purpose: purpose,
         })
-        return flight.save()
+        return mission.save()
     }
 
-    @Mutation(() => Flight)
-    protected async addFlightDescription(
+    @Mutation(() => Mission)
+    protected async addMissionDescription(
         @Arg("id", () => Int)
         id: number,
         @Arg("description", () => String)
         description: string,
-    ): Promise<Flight> {
-        let flight: Flight = await this.flightRepo.findOneOrFail({
+    ): Promise<Mission> {
+        let mission: Mission = await this.missionRepo.findOneOrFail({
             id: id,
         })
-        flight.description = description
-        return flight.save()
+        mission.description = description
+        return mission.save()
     }
 
-    @Mutation(() => Flight)
-    protected async addFlightOutcome(
+    @Mutation(() => Mission)
+    protected async addMissionOutcome(
         @Arg("id", () => Int)
         id: number,
         @Arg("outcome", () => String)
         outcome: string,
-    ): Promise<Flight> {
-        let flight: Flight = await this.flightRepo.findOneOrFail({
+    ): Promise<Mission> {
+        let mission: Mission = await this.missionRepo.findOneOrFail({
             id: id,
         })
-        flight.outcome = outcome
+        mission.outcome = outcome
 
-        return flight.save()
+        return mission.save()
     }
 
-    @Mutation(() => Flight)
-    protected async addFlightSession(
-        @Arg("flightid", () => Int)
-        flightid: number,
+    @Mutation(() => Mission)
+    protected async addMissionSession(
+        @Arg("missionid", () => Int)
+        missionid: number,
         @Arg("sessionid", () => Int)
         sessionid: number,
-    ): Promise<Flight> {
-        let flight: Flight = await this.flightRepo.findOneOrFail({
-            id: flightid,
+    ): Promise<Mission> {
+        let mission: Mission = await this.missionRepo.findOneOrFail({
+            id: missionid,
         })
         let session: Session = await this.sessionRepo.findOneOrFail({
             id: sessionid,
         })
-        flight.session = session
-        return flight.save()
+        mission.session = session
+        return mission.save()
     }
 }

@@ -15,7 +15,7 @@ import { Session } from "./session"
 
 @ObjectType()
 @Entity()
-export class Flight extends BaseEntity {
+export class Mission extends BaseEntity {
     @Field(() => Int)
     @PrimaryGeneratedColumn()
     id: number
@@ -43,7 +43,7 @@ export class Flight extends BaseEntity {
     @Field(() => Session, { nullable: true })
     @ManyToOne(
         () => Session,
-        (session: Session) => session.flights,
+        (session: Session) => session.missions,
         {
             nullable: true,
             lazy: true,

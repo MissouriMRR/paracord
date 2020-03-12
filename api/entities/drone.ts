@@ -10,7 +10,7 @@ import {
 
 @ObjectType()
 @Entity()
-export class Drone extends BaseEntity {
+export class Frame extends BaseEntity {
     @Field(() => Int)
     @PrimaryGeneratedColumn()
     id: number
