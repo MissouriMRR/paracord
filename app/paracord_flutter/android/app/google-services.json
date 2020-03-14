@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "817904791079",
+    "firebase_url": "https://paracord-mrdt.firebaseio.com",
+    "project_id": "paracord-mrdt",
+    "storage_bucket": "paracord-mrdt.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817904791079:android:05fb41b088eafffbb92802",
+        "android_client_info": {
+          "package_name": "com.example.paracord_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "817904791079-3fc9hivegoa13a0d6qtpiiqdjv5kdvq0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTBG-Pw9UizugsI1tncQVECEkpYabYtd0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "817904791079-3fc9hivegoa13a0d6qtpiiqdjv5kdvq0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
