@@ -17,7 +17,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+
     Provider.of<CurrentUserModel>(context, listen: false).initUser();
+
     _emailController.addListener(() {
       Provider.of<CurrentUserModel>(
         context,
@@ -27,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
         _emailError = null;
       });
     });
+
     _passwordController.addListener(() {
       Provider.of<CurrentUserModel>(
         context,
