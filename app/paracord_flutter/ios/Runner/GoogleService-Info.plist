@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>817904791079-lmtrahiq6e3r61on8knn3icqqfl4kehk.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.817904791079-lmtrahiq6e3r61on8knn3icqqfl4kehk</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCYiBgayxbI2gwl5K-IqtgFFk5GEPcEC4U</string>
+	<key>GCM_SENDER_ID</key>
+	<string>817904791079</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.paracordFlutter</string>
+	<key>PROJECT_ID</key>
+	<string>paracord-mrdt</string>
+	<key>STORAGE_BUCKET</key>
+	<string>paracord-mrdt.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:817904791079:ios:a8702dd4a05e5933b92802</string>
+	<key>DATABASE_URL</key>
+	<string>https://paracord-mrdt.firebaseio.com</string>
+</dict>
+</plist>
