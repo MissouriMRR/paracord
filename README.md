@@ -31,6 +31,27 @@ The app can be run on any compatible android or iOS device directly from your ID
 For more information on your platform, follow the instuctions on [Flutter Docs](https://flutter.dev/docs/get-started/).  
 Be sure to check out Material Design's [Flutter tutorials](https://material.io/collections/developer-tutorials/#flutter) if you need help getting started!
 
+#### Deploy on Android:	
+    1. Enable Developer Mode on Phone
+	2. Enable USB Debugging on Phone
+	3. Connect Your Phone with USB
+	4. Trust Your Computer if Prompted on Phone
+	5. Run App (app will automatically build on phone)
+
+#### Deploy on iOS (Mac-only):
+	1. Check the iOS version is compatible with the Xcode version
+	2. Install homebrew
+	3. Use homebrew to install ideviceinstaller, iOS-deploy & cocoapods
+	4. Add Apple ID to Xcode
+	5. Select development team
+	6. Connect your phone with USB
+	7. Trust your computer on Phone
+	8. Trust your Development Certificate on Phone
+	9. Create a unique bundle ID
+	10. Run App (app will automatically build on phone)
+
+*Tip: use Android Studio IDE*
+
 ### Server
 In the `api` folder, run the following commands:
 
