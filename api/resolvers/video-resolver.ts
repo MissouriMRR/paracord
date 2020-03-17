@@ -1,22 +1,19 @@
-import * as fileType from "file-type"
-import { GraphQLUpload } from "graphql-upload"
+import { GraphQLUpload, Upload } from "apollo-upload-server"
 import { Arg, Mutation, Query, Resolver } from "type-graphql"
 import { getRepository, Repository } from "typeorm"
 import { Video } from "../entities/video"
-import { File } from "../entities/file"
 import { v4 as uuid } from "uuid"
 
 @Resolver(() => Video)
 export class VideoResolver {
-    public videoRepo: Repository<Video> = getRepository(Video);
+    public videoRepo: Repository<Video> = getRepository(Video)
 
     @Mutation(() => Video)
     protected async uploadVideo(
-        @Arg("video", ()=> GraphQLUpload) video: File
+        @Arg("video", ()=> GraphQLUpload) video: Upload
     ): Promise<Video> {
 
         const id: string = uuid()
-        const filename: string = `${id}.pdf`
         const url: string = "put/upload/link/here"
         
         //Upload the video here
