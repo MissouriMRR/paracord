@@ -14,6 +14,7 @@ createConnection()
         console.log("Building schemas")
         const gqlschema = await buildSchema({
             resolvers: [`${__dirname}/**/*resolver.ts`],
+            validate: false
         })
 
         console.log("Creating express app")
