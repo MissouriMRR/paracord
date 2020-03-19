@@ -9,27 +9,32 @@ import { createWriteStream } from "fs"
 export class VideoResolver {
     public videoRepo: Repository<Video> = getRepository(Video)
 
-    @Mutation(() => Video)
+    @Mutation(() => Boolean)
     protected async uploadVideo(
         @Arg("video", ()=> GraphQLUpload)
         {
             createReadStream,
             filename
         }: Upload
-    ): Promise<Video> {
+    ): Promise<Boolean> {
 
         const id: string = uuid()
         const url: string = "put/upload/link/here"
         
-        //Upload the video here, for now server saves video file locally
-        createReadStream().pipe(createWriteStream(__dirname + `/../files/${filename}`))
-
         const videoInfo = this.videoRepo.create({
             id: id,
             url: url
         })
+        videoInfo.save()
 
-        return videoInfo.save()
+        //Try running npm install if this doesn't work
+        //Upload the video here, for now server saves video file locally
+        return new Promise(async (resolve, reject) =>
+            createReadStream()
+            .pipe(createWriteStream(__dirname + `/../files/${filename}`))
+            .on("finish", () => resolve(true))
+            .on("error", () => reject(false))
+        )
     }
 
     @Query(() => [Video])
