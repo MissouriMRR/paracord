@@ -4,6 +4,7 @@ import { getRepository, Repository } from "typeorm"
 import { Video } from "../entities/video"
 import { v4 as uuid } from "uuid"
 import { createWriteStream } from "fs"
+import { createFile, createFolder } from "../file_manager/file_manager"
 
 @Resolver(() => Video)
 export class VideoResolver {
@@ -15,7 +16,11 @@ export class VideoResolver {
         {
             createReadStream,
             filename
-        }: Upload
+        }: Upload,
+        @Arg("mimeType", () => String)
+        mimeType: string,
+        @Arg("name", () => String)
+        name: string,
     ): Promise<Boolean> {
 
         const id: string = uuid()
@@ -28,13 +33,11 @@ export class VideoResolver {
         videoInfo.save()
 
         //Try running npm install if this doesn't work
-        //Upload the video here, for now server saves video file locally
-        return new Promise(async (resolve, reject) =>
-            createReadStream()
-            .pipe(createWriteStream(__dirname + `/../files/${filename}`))
-            .on("finish", () => resolve(true))
-            .on("error", () => reject(false))
-        )
+        //Upload the video here
+        var folderId: string = await createFolder('If this is the name then folder uploads are working')
+        await createFile(name, mimeType, folderId, createReadStream())
+
+        return true
     }
 
     @Query(() => [Video])
