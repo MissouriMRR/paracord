@@ -1,4 +1,4 @@
-import { Field, ObjectType, Int } from "type-graphql"
+import { Field, ObjectType, Int } from 'type-graphql'
 import {
     BaseEntity,
     Column,
@@ -9,9 +9,10 @@ import {
     OneToMany,
     ManyToOne,
     JoinTable,
-} from "typeorm"
-import { Lazy } from "../helpers"
-import { Session } from "./session"
+    OneToOne,
+} from 'typeorm'
+import { Lazy } from '../helpers'
+import { Session } from './session'
 
 @ObjectType()
 @Entity()
@@ -41,13 +42,14 @@ export class Flight extends BaseEntity {
     outcome: string
 
     @Field(() => Session, { nullable: true })
-    @ManyToOne(
-        () => Session,
-        (session: Session) => session.flights,
-        {
-            nullable: true,
-            lazy: true,
-        },
-    )
+    @ManyToOne(() => Session, (session: Session) => session.flights, {
+        nullable: true,
+        lazy: true,
+    })
     session: Lazy<Session>
+
+    //The folder Id of the flight on google drive
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    driveId: string
 }

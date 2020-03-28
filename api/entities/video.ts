@@ -1,26 +1,28 @@
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType } from 'type-graphql'
 import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  Index,
-  PrimaryColumn
-} from "typeorm";
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    Entity,
+    Index,
+    PrimaryColumn,
+} from 'typeorm'
 
 @ObjectType()
 @Entity()
 export class Video extends BaseEntity {
-  @Field(() => ID)
-  @Index({ unique: true })
-  @PrimaryColumn()
-  id: string
+    //Database ID
+    @Field(() => ID)
+    @Index({ unique: true })
+    @PrimaryColumn()
+    id: string
 
-  @Field()
-  @Column()
-  url: string
+    //Google drive ID
+    @Field()
+    @Column()
+    driveId: string
 
-  @Field()
-  @CreateDateColumn()
-  readonly added: Date
+    @Field()
+    @CreateDateColumn()
+    readonly added: Date
 }

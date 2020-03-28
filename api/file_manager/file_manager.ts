@@ -21,7 +21,7 @@ export async function createFile(
     }
     var media = {
         mimeType: mimeType,
-        body: fileStream
+        body: fileStream,
     }
 
     try {
@@ -61,9 +61,3 @@ export async function createFolder(folderName: string): Promise<string> {
         console.log(err)
     }
 }
-
-/* example use 
-    var folderId: string = await createFolder('Parent')
-    await createFile('test.jpg', 'image/jpeg', './files/photo1.jpg', folderId)
-*/
-

@@ -1,4 +1,4 @@
-import { Field, ObjectType, Int } from "type-graphql"
+import { Field, ObjectType, Int } from 'type-graphql'
 import {
     BaseEntity,
     Column,
@@ -9,11 +9,11 @@ import {
     ManyToOne,
     OneToMany,
     JoinTable,
-} from "typeorm"
-import { Lazy } from "../helpers"
-import { Flight } from "./flight"
-import { User } from "./user"
-import { Drone } from "./drone"
+} from 'typeorm'
+import { Lazy } from '../helpers'
+import { Flight } from './flight'
+import { User } from './user'
+import { Drone } from './drone'
 
 @ObjectType()
 @Entity()
@@ -55,24 +55,16 @@ export class Session extends BaseEntity {
     outcome: string
 
     @Field(() => [Flight])
-    @OneToMany(
-        () => Flight,
-        (flight: Flight) => flight.session,
-        {
-            nullable: true,
-            lazy: true,
-        },
-    )
+    @OneToMany(() => Flight, (flight: Flight) => flight.session, {
+        nullable: true,
+        lazy: true,
+    })
     flights: Lazy<Flight[]>
 
     @Field(() => User)
-    @ManyToOne(
-        () => User,
-        (user: User) => user.sessions,
-        {
-            nullable: true,
-            lazy: true,
-        },
-    )
+    @ManyToOne(() => User, (user: User) => user.sessions, {
+        nullable: true,
+        lazy: true,
+    })
     user: Lazy<User>
 }

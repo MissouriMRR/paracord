@@ -1,7 +1,7 @@
-import { Query, Resolver, Mutation, Arg, Int } from "type-graphql"
-import { Repository, getRepository } from "typeorm"
-import { Session } from "../entities/session"
-import { User } from "../entities/user"
+import { Query, Resolver, Mutation, Arg, Int } from 'type-graphql'
+import { Repository, getRepository } from 'typeorm'
+import { Session } from '../entities/session'
+import { User } from '../entities/user'
 
 @Resolver(() => Session)
 export class SessionResolver {
@@ -15,8 +15,8 @@ export class SessionResolver {
 
     @Mutation(() => Session)
     protected async createSession(
-        @Arg("purpose", () => String)
-        purpose: string,
+        @Arg('purpose', () => String)
+        purpose: string
     ): Promise<Session> {
         let session: Session = this.sessionRepo.create({
             purpose: purpose,
@@ -27,10 +27,10 @@ export class SessionResolver {
 
     @Mutation(() => Session)
     protected async endSession(
-        @Arg("id", () => Int)
+        @Arg('id', () => Int)
         id: number,
-        @Arg("outcome", () => String)
-        outcome: string,
+        @Arg('outcome', () => String)
+        outcome: string
     ): Promise<Session> {
         let session: Session = await this.sessionRepo.findOneOrFail({
             id: id,
@@ -41,8 +41,8 @@ export class SessionResolver {
 
     @Mutation(() => Boolean)
     protected async deleteSessionByID(
-        @Arg("id", () => Int)
-        id: number,
+        @Arg('id', () => Int)
+        id: number
     ): Promise<boolean> {
         await this.sessionRepo.delete({
             id: id,
@@ -52,8 +52,8 @@ export class SessionResolver {
 
     @Query(() => Session)
     protected async returnSessionByID(
-        @Arg("id", () => Int)
-        id: number,
+        @Arg('id', () => Int)
+        id: number
     ): Promise<Session> {
         return this.sessionRepo.findOneOrFail({
             id: id,
