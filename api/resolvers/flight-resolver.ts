@@ -2,6 +2,7 @@ import { Query, Resolver, Mutation, Arg, Int } from 'type-graphql'
 import { Repository, getRepository } from 'typeorm'
 import { Flight } from '../entities/flight'
 import { Session } from '../entities/session'
+import { createFolder } from '../file_manager/file_manager'
 
 @Resolver(() => Flight)
 export class FlightResolver {
@@ -40,8 +41,15 @@ export class FlightResolver {
         @Arg('purpose', () => String)
         purpose: string
     ): Promise<Flight> {
+
+        let date: Date = new Date()
+        var driveId: string = await createFolder(
+            date.toString()
+        )
+
         let flight: Flight = this.flightRepo.create({
             purpose: purpose,
+            driveId: driveId
         })
         return flight.save()
     }

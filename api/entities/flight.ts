@@ -13,6 +13,7 @@ import {
 } from 'typeorm'
 import { Lazy } from '../helpers'
 import { Session } from './session'
+import { Video } from '../entities/video' 
 
 @ObjectType()
 @Entity()
@@ -47,6 +48,13 @@ export class Flight extends BaseEntity {
         lazy: true,
     })
     session: Lazy<Session>
+
+    @Field(() => [Video])
+    @OneToMany(() => Video, (video: Video) => video.flight, {
+        nullable: true,
+        lazy: true,
+    })
+    videos: Lazy<Video[]>
 
     //The folder Id of the flight on google drive
     @Field({ nullable: true })

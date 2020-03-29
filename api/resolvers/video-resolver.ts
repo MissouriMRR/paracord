@@ -1,40 +1,40 @@
 import { Upload, GraphQLUpload } from 'apollo-upload-server'
-import { Arg, Mutation, Query, Resolver } from 'type-graphql'
+import { Arg, Mutation, Query, Resolver, Int } from 'type-graphql'
 import { getRepository, Repository } from 'typeorm'
 import { Video } from '../entities/video'
 import { v4 as uuid } from 'uuid'
 import { createWriteStream } from 'fs'
-import { createFile, createFolder } from '../file_manager/file_manager'
+import { createFile } from '../file_manager/file_manager'
+import { Flight } from '../entities/flight'
 
 @Resolver(() => Video)
 export class VideoResolver {
     public videoRepo: Repository<Video> = getRepository(Video)
+    public flightRepo: Repository<Flight> = getRepository(Flight)
 
-    @Mutation(() => Boolean)
+    @Mutation(() => Video)
     protected async uploadVideo(
         @Arg('video', () => GraphQLUpload)
         { createReadStream, filename }: Upload,
         @Arg('mimeType', () => String)
         mimeType: string,
-        @Arg('name', () => String)
-        name: string
-    ): Promise<Boolean> {
-        const id: string = uuid()
-
+        @Arg('flightId', () => Int)
+        flightId: number,
+    ): Promise<Video> {
         //Try running npm install if this doesn't work
         //Upload the video here
-        var folderId: string = await createFolder(
-            'If this is the name then folder uploads are working'
-        )
-        var videoId: string = await createFile(name, mimeType, folderId, createReadStream())
 
-        const videoInfo = this.videoRepo.create({
-            id: id,
+        let flight: Flight = await this.flightRepo.findOneOrFail({
+            id: flightId,
+        })
+
+        let flightDriveId: string = flight.driveId
+        var videoId: string = await createFile(filename, mimeType, flightDriveId, createReadStream())
+        const video: Video = this.videoRepo.create({
             driveId: videoId
         })
-        videoInfo.save()
-        
-        return true
+        video.flight = flight
+        return video.save()
     }
 
     @Query(() => [Video])
