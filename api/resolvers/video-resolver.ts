@@ -2,9 +2,7 @@ import { Upload, GraphQLUpload } from 'apollo-upload-server'
 import { Arg, Mutation, Query, Resolver, Int } from 'type-graphql'
 import { getRepository, Repository } from 'typeorm'
 import { Video } from '../entities/video'
-import { v4 as uuid } from 'uuid'
-import { createWriteStream } from 'fs'
-import { createFile } from '../file_manager/file_manager'
+import { createFile, listFiles} from '../file_manager/file_manager'
 import { Flight } from '../entities/flight'
 
 @Resolver(() => Video)
@@ -39,6 +37,7 @@ export class VideoResolver {
 
     @Query(() => [Video])
     protected async videos(): Promise<Video[]> {
+        await listFiles()
         return this.videoRepo.find()
     }
 }

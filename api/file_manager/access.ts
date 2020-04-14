@@ -1,9 +1,10 @@
 import * as fs from 'fs'
 import * as readline from 'readline'
+import privateKey from './private_key.json'
 import { google } from 'googleapis'
 import { OAuth2Client } from 'googleapis-common'
 import { GaxiosError } from 'gaxios'
-import { Credentials } from 'google-auth-library'
+import { Credentials, JWT } from 'google-auth-library'
 
 //Boilerplate code taken from the google drive API documentation
 
@@ -14,6 +15,22 @@ const SCOPES: string[] = ['https://www.googleapis.com/auth/drive']
 // created automatically when the authorization flow completes for the first
 // time.
 const TOKEN_PATH: string = 'token.json'
+
+//Load JWT auth client
+export async function getJWTAuth(): Promise<JWT> {
+    let JWTAuth: JWT = new google.auth.JWT(
+        privateKey.client_email,
+        null,
+        privateKey.private_key,
+        SCOPES
+    );
+    try {
+        await JWTAuth.authorize()
+        return JWTAuth
+    } catch (err) {
+        console.error('Error loading JWT Auth: ', err)
+    }
+}
 
 //Load Client Secret
 export function getCredentials(): Buffer {

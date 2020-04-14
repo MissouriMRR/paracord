@@ -1,8 +1,8 @@
 import * as fs from 'fs'
-import { google, drive_v3 } from 'googleapis'
-import { OAuth2Client } from 'googleapis-common'
-import { GaxiosError, GaxiosResponse } from 'gaxios'
-import { getAuthorizedClient, getCredentials } from './access'
+import { google, drive_v3 }  from 'googleapis'
+import { GaxiosResponse } from 'gaxios'
+import { getJWTAuth } from './access'
+import { JWT } from 'google-auth-library'
 
 export async function createFile(
     fileName: string,
@@ -10,10 +10,8 @@ export async function createFile(
     folderId: string,
     fileStream: fs.ReadStream
 ): Promise<string> {
-    const auth: OAuth2Client = getAuthorizedClient(
-        JSON.parse(getCredentials().toString())
-    )
-    const drive = google.drive({ version: 'v3', auth })
+    const JWTAuth: JWT = await getJWTAuth()
+    const drive = google.drive({ version: 'v3', auth: JWTAuth })
 
     var fileMetadata = {
         name: fileName,
@@ -39,10 +37,8 @@ export async function createFile(
 }
 
 export async function createFolder(folderName: string): Promise<string> {
-    const auth: OAuth2Client = getAuthorizedClient(
-        JSON.parse(getCredentials().toString())
-    )
-    const drive = google.drive({ version: 'v3', auth })
+    const JWTAuth: JWT = await getJWTAuth()
+    const drive = google.drive({ version: 'v3', auth: JWTAuth }) 
 
     var fileMetadata = {
         name: folderName,
@@ -56,8 +52,24 @@ export async function createFolder(folderName: string): Promise<string> {
                 fields: 'id',
             }
         )
+        
         return file.data.id
     } catch (err) {
         console.log(err)
     }
+}
+
+//this is for debugging purposes.
+export async function listFiles(): Promise<void> {
+    const JWTAuth: JWT = await getJWTAuth()
+    const drive = google.drive({ version: 'v3', auth: JWTAuth })
+
+    const response: GaxiosResponse<drive_v3.Schema$FileList> = await drive.files.list()
+    const files: drive_v3.Schema$File[] = response.data.files
+    
+    console.log('\n\nVIDEOS IN DRIVE: \n\n')
+    for(var i = 0; i < files.length; i++) {
+        console.log(files[i].name)
+    }
+    console.log('\n\n')
 }

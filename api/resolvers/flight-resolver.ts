@@ -39,12 +39,13 @@ export class FlightResolver {
     @Mutation(() => Flight)
     protected async createFlight(
         @Arg('purpose', () => String)
-        purpose: string
+        purpose: string,
+        @Arg('name', () => String)
+        name : string
     ): Promise<Flight> {
 
-        let date: Date = new Date()
         var driveId: string = await createFolder(
-            date.toString()
+            name
         )
 
         let flight: Flight = this.flightRepo.create({
