@@ -4,3 +4,4 @@ credentials.json
 .prettierrc.json
 private_key.json
 shared_folder.json
+node_modules/
