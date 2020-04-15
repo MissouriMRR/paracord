@@ -5,8 +5,12 @@ import { createServer } from 'http'
 import 'reflect-metadata'
 import { buildSchema } from 'type-graphql'
 import { createConnection } from 'typeorm'
+import { resolve } from "path"
+import { config } from "dotenv"
 
 const port = 3000
+
+config({ path: resolve(__dirname, "./.env") })
 
 console.log('Connecting to database')
 createConnection()

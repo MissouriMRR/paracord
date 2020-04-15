@@ -1,9 +1,9 @@
 import * as fs from 'fs'
-import sharedFolderInfo from './shared_folder.json'
 import { google, drive_v3 }  from 'googleapis'
 import { GaxiosResponse } from 'gaxios'
 import { getJWTAuth } from './access'
 import { JWT } from 'google-auth-library'
+
 
 export async function createFile(
     fileName: string,
@@ -44,7 +44,7 @@ export async function createFolder(folderName: string): Promise<string> {
     var fileMetadata = {
         name: folderName,
         mimeType: 'application/vnd.google-apps.folder',
-        parents: [sharedFolderInfo.folderId],
+        parents: [process.env.SHARED_FOLDER_ID],
     }
 
     try {
