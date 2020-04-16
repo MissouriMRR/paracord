@@ -13,9 +13,7 @@ export class VideoResolver {
     @Mutation(() => Video)
     protected async uploadVideo(
         @Arg('video', () => GraphQLUpload)
-        { createReadStream, filename }: Upload,
-        @Arg('mimeType', () => String)
-        mimeType: string,
+        { createReadStream, filename, mimetype }: Upload,
         @Arg('flightId', () => Int)
         flightId: number,
     ): Promise<Video> {
@@ -27,7 +25,7 @@ export class VideoResolver {
         })
 
         let flightDriveId: string = flight.driveId
-        var videoId: string = await createFile(filename, mimeType, flightDriveId, createReadStream())
+        var videoId: string = await createFile(filename, mimetype, flightDriveId, createReadStream())
         const video: Video = this.videoRepo.create({
             driveId: videoId
         })

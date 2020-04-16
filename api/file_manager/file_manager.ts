@@ -12,7 +12,10 @@ export async function createFile(
     fileStream: fs.ReadStream
 ): Promise<string> {
     const JWTAuth: JWT = await getJWTAuth()
-    const drive = google.drive({ version: 'v3', auth: JWTAuth })
+    const drive: drive_v3.Drive = google.drive({
+        version: 'v3', 
+        auth: JWTAuth
+    })
 
     var fileMetadata = {
         name: fileName,
@@ -26,11 +29,13 @@ export async function createFile(
     try {
         var file: GaxiosResponse<drive_v3.Schema$File> = await drive.files.create(
             {
+                supportsTeamDrives: true,
                 requestBody: fileMetadata,
                 media: media,
                 fields: 'id',
             }
         )
+
         return file.data.id
     } catch (err) {
         console.log(err)
@@ -39,23 +44,27 @@ export async function createFile(
 
 export async function createFolder(folderName: string): Promise<string> {
     const JWTAuth: JWT = await getJWTAuth()
-    const drive = google.drive({ version: 'v3', auth: JWTAuth }) 
+    const drive: drive_v3.Drive = google.drive({
+        version: 'v3', 
+        auth: JWTAuth
+    })
 
     var fileMetadata = {
         name: folderName,
         mimeType: 'application/vnd.google-apps.folder',
-        parents: [process.env.SHARED_FOLDER_ID],
+        parents: [process.env.GOOGLE_DRIVE_FOLDER_ID],
     }
 
     try {
         var file: GaxiosResponse<drive_v3.Schema$File> = await drive.files.create(
             {
+                supportsTeamDrives: true,
                 requestBody: fileMetadata,
                 fields: 'id',
             }
         )
-        
         return file.data.id
+
     } catch (err) {
         console.log(err)
     }
@@ -64,9 +73,15 @@ export async function createFolder(folderName: string): Promise<string> {
 //this is for debugging purposes.
 export async function listFiles(): Promise<void> {
     const JWTAuth: JWT = await getJWTAuth()
-    const drive = google.drive({ version: 'v3', auth: JWTAuth })
+    const drive: drive_v3.Drive = google.drive({
+        version: 'v3', 
+        auth: JWTAuth
+    })
 
-    const response: GaxiosResponse<drive_v3.Schema$FileList> = await drive.files.list()
+    const response: GaxiosResponse<drive_v3.Schema$FileList> = await drive.files.list({
+        supportsTeamDrives: true,  
+        includeTeamDriveItems: true
+    })
     const files: drive_v3.Schema$File[] = response.data.files
     
     console.log('\n\nVIDEOS IN DRIVE: \n\n')

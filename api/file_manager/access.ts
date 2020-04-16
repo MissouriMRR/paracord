@@ -1,4 +1,4 @@
-import privateKey from './private_key.json'
+import privateKey from '../private_key.json'
 import { google } from 'googleapis'
 import { JWT } from 'google-auth-library'
 

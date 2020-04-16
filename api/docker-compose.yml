@@ -12,7 +12,9 @@ services:
       - POSTGRES_USER=paracord
       - POSTGRES_PASSWORD=paracord
   
-  paracord_web: 
+  paracord_web:
+    env_file:
+      - ./.docker/web.env
     build: .
     restart: always
     volumes:

@@ -4,4 +4,5 @@ credentials.json
 .prettierrc.json
 private_key.json
 node_modules/
+web.env
 .env
