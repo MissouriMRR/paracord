@@ -1,8 +1,7 @@
 import * as fs from 'fs'
-import { google, drive_v3 }  from 'googleapis'
+import { drive_v3 }  from 'googleapis'
 import { GaxiosResponse } from 'gaxios'
 import { getAuthorizedDrive } from './access'
-import { JWT } from 'google-auth-library'
 
 const videoMimeTypes: string[] = ["video/3gpp", "video/mp4", "video/mpeg", "video/ogg", "video/quicktime", "video/webm", "video/x-m4v", "video/ms-asf", "video/x-ms-wmv", "video/x-msvideo"]
 
