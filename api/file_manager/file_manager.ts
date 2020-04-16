@@ -68,6 +68,19 @@ export async function createFolder(folderName: string): Promise<string> {
     }
 }
 
+export async function deleteFolder(folderId: string): Promise<void> {
+    const drive: drive_v3.Drive = await getAuthorizedDrive()
+
+    try {
+        await drive.files.delete({
+            supportsTeamDrives: true,
+            fileId: folderId
+        })
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 //this is for debugging purposes.
 export async function listFiles(): Promise<void> {
     const drive: drive_v3.Drive = await getAuthorizedDrive()
@@ -80,7 +93,7 @@ export async function listFiles(): Promise<void> {
     
     console.log('\n\nVIDEOS IN DRIVE: \n\n')
     for(var i = 0; i < files.length; i++) {
-        console.log(files[i].name)
+        console.log(files[i].name + " " + files[i].id)
     }
     console.log('\n\n')
 }

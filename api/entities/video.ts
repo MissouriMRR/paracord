@@ -32,6 +32,7 @@ export class Video extends BaseEntity {
     @ManyToOne(() => Flight, (flight: Flight) => flight.videos, {
         nullable: true,
         lazy: true,
+        onDelete:'CASCADE'
     })
     flight: Lazy<Flight>
 }

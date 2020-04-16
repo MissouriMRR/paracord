@@ -46,10 +46,11 @@ export class Flight extends BaseEntity {
     @ManyToOne(() => Session, (session: Session) => session.flights, {
         nullable: true,
         lazy: true,
+        onDelete:'CASCADE'
     })
     session: Lazy<Session>
 
-    @Field(() => [Video])
+    @Field(() => [Video], { nullable: true })
     @OneToMany(() => Video, (video: Video) => video.flight, {
         nullable: true,
         lazy: true,

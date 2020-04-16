@@ -57,7 +57,7 @@ export class Session extends BaseEntity {
     @Field(() => [Flight])
     @OneToMany(() => Flight, (flight: Flight) => flight.session, {
         nullable: true,
-        lazy: true,
+        lazy: true
     })
     flights: Lazy<Flight[]>
 
@@ -65,6 +65,7 @@ export class Session extends BaseEntity {
     @ManyToOne(() => User, (user: User) => user.sessions, {
         nullable: true,
         lazy: true,
+        onDelete:'SET NULL'
     })
     user: Lazy<User>
 }

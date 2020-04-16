@@ -2,7 +2,7 @@ import { Query, Resolver, Mutation, Arg, Int } from 'type-graphql'
 import { Repository, getRepository } from 'typeorm'
 import { Flight } from '../entities/flight'
 import { Session } from '../entities/session'
-import { createFolder } from '../file_manager/file_manager'
+import { createFolder, deleteFolder } from '../file_manager/file_manager'
 
 @Resolver(() => Flight)
 export class FlightResolver {
@@ -19,10 +19,14 @@ export class FlightResolver {
         @Arg('id', () => Int)
         id: number
     ): Promise<boolean> {
-        await this.flightRepo.delete({
+        let flight: Flight = await this.flightRepo.findOneOrFail({
             id: id,
         })
 
+        await deleteFolder(flight.driveId)
+        await this.flightRepo.delete({
+            id: id,
+        })
         return true
     }
 
