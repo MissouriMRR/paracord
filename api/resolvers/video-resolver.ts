@@ -19,18 +19,22 @@ export class VideoResolver {
     ): Promise<Video> {
         //Try running npm install if this doesn't work
         //Upload the video here
+        try {
+            let flight: Flight = await this.flightRepo.findOneOrFail({
+                id: flightId,
+            })
+            let flightDriveId: string = flight.driveId
 
-        let flight: Flight = await this.flightRepo.findOneOrFail({
-            id: flightId,
-        })
-
-        let flightDriveId: string = flight.driveId
-        var videoId: string = await createFile(filename, mimetype, flightDriveId, createReadStream())
-        const video: Video = this.videoRepo.create({
-            driveId: videoId
-        })
-        video.flight = flight
-        return video.save()
+            var videoId: string = await createFile(filename, mimetype, flightDriveId, createReadStream())
+            const video: Video = this.videoRepo.create({
+                driveId: videoId
+            })
+            video.flight = flight
+            
+            return video.save()
+        } catch (err) {
+            console.log(err)
+        }        
     }
 
     @Query(() => [Video])

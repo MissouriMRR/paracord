@@ -1,9 +1,10 @@
 import * as fs from 'fs'
 import { google, drive_v3 }  from 'googleapis'
 import { GaxiosResponse } from 'gaxios'
-import { getJWTAuth } from './access'
+import { getAuthorizedDrive } from './access'
 import { JWT } from 'google-auth-library'
 
+const videoMimeTypes: string[] = ["video/3gpp", "video/mp4", "video/mpeg", "video/ogg", "video/quicktime", "video/webm", "video/x-m4v", "video/ms-asf", "video/x-ms-wmv", "video/x-msvideo"]
 
 export async function createFile(
     fileName: string,
@@ -11,11 +12,13 @@ export async function createFile(
     folderId: string,
     fileStream: fs.ReadStream
 ): Promise<string> {
-    const JWTAuth: JWT = await getJWTAuth()
-    const drive: drive_v3.Drive = google.drive({
-        version: 'v3', 
-        auth: JWTAuth
-    })
+    //Make sure video is a video
+    if(!videoMimeTypes.includes(mimeType)) {
+        throw new Error(
+            'File mime type not recognized as a video.'
+        )
+    }
+    const drive: drive_v3.Drive = await getAuthorizedDrive()
 
     var fileMetadata = {
         name: fileName,
@@ -43,11 +46,7 @@ export async function createFile(
 }
 
 export async function createFolder(folderName: string): Promise<string> {
-    const JWTAuth: JWT = await getJWTAuth()
-    const drive: drive_v3.Drive = google.drive({
-        version: 'v3', 
-        auth: JWTAuth
-    })
+    const drive: drive_v3.Drive = await getAuthorizedDrive()
 
     var fileMetadata = {
         name: folderName,
@@ -72,11 +71,7 @@ export async function createFolder(folderName: string): Promise<string> {
 
 //this is for debugging purposes.
 export async function listFiles(): Promise<void> {
-    const JWTAuth: JWT = await getJWTAuth()
-    const drive: drive_v3.Drive = google.drive({
-        version: 'v3', 
-        auth: JWTAuth
-    })
+    const drive: drive_v3.Drive = await getAuthorizedDrive()
 
     const response: GaxiosResponse<drive_v3.Schema$FileList> = await drive.files.list({
         supportsTeamDrives: true,  
