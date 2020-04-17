@@ -5,6 +5,8 @@ import { Video } from '../entities/video'
 import { createFile, listFiles, deleteFolder } from '../file_manager/file_manager'
 import { Flight } from '../entities/flight'
 
+const videoMimeTypes: string[] = ["video/3gpp", "video/mp4", "video/mpeg", "video/ogg", "video/quicktime", "video/webm", "video/x-m4v", "video/ms-asf", "video/x-ms-wmv", "video/x-msvideo"]
+
 @Resolver(() => Video)
 export class VideoResolver {
     public videoRepo: Repository<Video> = getRepository(Video)
@@ -17,24 +19,27 @@ export class VideoResolver {
         @Arg('flightId', () => Int)
         flightId: number,
     ): Promise<Video> {
+        //Make sure video is a video
+        if(!videoMimeTypes.includes(mimetype)) {
+            throw new Error(
+                'File mime type not recognized as a video.'
+            )
+        }
+
         //Try running npm install if this doesn't work
         //Upload the video here
-        try {
-            let flight: Flight = await this.flightRepo.findOneOrFail({
-                id: flightId,
-            })
-            let flightDriveId: string = flight.driveId
+        let flight: Flight = await this.flightRepo.findOneOrFail({
+            id: flightId,
+        })
+        let flightDriveId: string = flight.driveId
 
-            var videoId: string = await createFile(filename, mimetype, flightDriveId, createReadStream())
-            const video: Video = this.videoRepo.create({
-                driveId: videoId
-            })
-            video.flight = flight
-            
-            return video.save()
-        } catch (err) {
-            console.log(err)
-        }        
+        var videoId: string = await createFile(filename, mimetype, flightDriveId, createReadStream())
+        const video: Video = this.videoRepo.create({
+            driveId: videoId
+        })
+        video.flight = flight
+        
+        return video.save()
     }
 
     @Query(() => [Video])

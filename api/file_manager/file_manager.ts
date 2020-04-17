@@ -3,20 +3,12 @@ import { drive_v3 }  from 'googleapis'
 import { GaxiosResponse } from 'gaxios'
 import { getAuthorizedDrive } from './access'
 
-const videoMimeTypes: string[] = ["video/3gpp", "video/mp4", "video/mpeg", "video/ogg", "video/quicktime", "video/webm", "video/x-m4v", "video/ms-asf", "video/x-ms-wmv", "video/x-msvideo"]
-
 export async function createFile(
     fileName: string,
     mimeType: string,
     folderId: string,
     fileStream: fs.ReadStream
 ): Promise<string> {
-    //Make sure video is a video
-    if(!videoMimeTypes.includes(mimeType)) {
-        throw new Error(
-            'File mime type not recognized as a video.'
-        )
-    }
     const drive: drive_v3.Drive = await getAuthorizedDrive()
 
     var fileMetadata = {
