@@ -60,13 +60,13 @@ export async function createFolder(folderName: string): Promise<string> {
     }
 }
 
-export async function deleteFolder(folderId: string): Promise<void> {
+export async function deleteFile(fileId: string): Promise<void> {
     const drive: drive_v3.Drive = await getAuthorizedDrive()
 
     try {
         await drive.files.delete({
             supportsTeamDrives: true,
-            fileId: folderId
+            fileId: fileId
         })
     } catch (err) {
         console.log(err)

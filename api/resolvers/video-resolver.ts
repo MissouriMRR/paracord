@@ -2,7 +2,7 @@ import { Upload, GraphQLUpload } from 'apollo-upload-server'
 import { Arg, Mutation, Query, Resolver, Int } from 'type-graphql'
 import { getRepository, Repository } from 'typeorm'
 import { Video } from '../entities/video'
-import { createFile, listFiles, deleteFolder } from '../file_manager/file_manager'
+import { createFile, listFiles, deleteFile } from '../file_manager/file_manager'
 import { Flight } from '../entities/flight'
 
 const videoMimeTypes: string[] = ["video/3gpp", "video/mp4", "video/mpeg", "video/ogg", "video/quicktime", "video/webm", "video/x-m4v", "video/ms-asf", "video/x-ms-wmv", "video/x-msvideo"]
@@ -56,7 +56,7 @@ export class VideoResolver {
         let video: Video = await this.videoRepo.findOneOrFail({
             id: id,
         })
-        await deleteFolder(video.driveId)
+        await deleteFile(video.driveId)
 
         await this.videoRepo.delete({
             id: id,
