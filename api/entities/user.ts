@@ -1,4 +1,4 @@
-import { Field, ObjectType, Int } from "type-graphql"
+import { Field, ObjectType, Int } from 'type-graphql'
 import {
     BaseEntity,
     Column,
@@ -7,9 +7,9 @@ import {
     ManyToOne,
     ManyToMany,
     OneToMany,
-} from "typeorm"
-import { Session } from "./session"
-import { Lazy } from "../helpers"
+} from 'typeorm'
+import { Session } from './session'
+import { Lazy } from '../helpers'
 
 @ObjectType()
 @Entity()
@@ -27,13 +27,9 @@ export class User extends BaseEntity {
     password: string
 
     @Field(() => [Session])
-    @OneToMany(
-        () => Session,
-        (session: Session) => session.user,
-        {
-            nullable: true,
-            lazy: true,
-        },
-    )
+    @OneToMany(() => Session, (session: Session) => session.user, {
+        nullable: true,
+        lazy: true,
+    })
     sessions: Lazy<Session[]>
 }

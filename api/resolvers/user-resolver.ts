@@ -1,6 +1,6 @@
-import { Query, Resolver, Mutation, Arg, Int } from "type-graphql"
-import { Repository, getRepository } from "typeorm"
-import { User } from "../entities/user"
+import { Query, Resolver, Mutation, Arg, Int } from 'type-graphql'
+import { Repository, getRepository } from 'typeorm'
+import { User } from '../entities/user'
 
 @Resolver(() => User)
 export class UserResolver {
@@ -13,10 +13,10 @@ export class UserResolver {
 
     @Mutation(() => User)
     protected async changeUserEmail(
-        @Arg("id", () => Int)
+        @Arg('id', () => Int)
         id: number,
-        @Arg("email", () => String)
-        email: string,
+        @Arg('email', () => String)
+        email: string
     ): Promise<User> {
         let user: User = await this.userRepo.findOneOrFail({
             id: id,
@@ -27,10 +27,10 @@ export class UserResolver {
 
     @Mutation(() => User)
     protected async changeUserPassword(
-        @Arg("id", () => Int)
+        @Arg('id', () => Int)
         id: number,
-        @Arg("password", () => String)
-        password: string,
+        @Arg('password', () => String)
+        password: string
     ): Promise<User> {
         let user: User = await this.userRepo.findOneOrFail({
             id: id,
@@ -41,8 +41,8 @@ export class UserResolver {
 
     @Query(() => User)
     protected async returnUserByEmail(
-        @Arg("email", () => String)
-        email: string,
+        @Arg('email', () => String)
+        email: string
     ): Promise<User> {
         return this.userRepo.findOneOrFail({
             email: email,
@@ -51,8 +51,8 @@ export class UserResolver {
 
     @Query(() => User)
     protected async returnUserByID(
-        @Arg("id", () => Int)
-        id: number,
+        @Arg('id', () => Int)
+        id: number
     ): Promise<User> {
         return this.userRepo.findOneOrFail({
             id: id,
@@ -61,10 +61,10 @@ export class UserResolver {
 
     @Mutation(() => User)
     protected async createUser(
-        @Arg("email", () => String)
+        @Arg('email', () => String)
         email: string,
-        @Arg("password", () => String)
-        password: string,
+        @Arg('password', () => String)
+        password: string
     ): Promise<User> {
         const user: User = this.userRepo.create({
             email: email,
@@ -75,8 +75,8 @@ export class UserResolver {
 
     @Mutation(() => Boolean)
     protected async deleteUserByID(
-        @Arg("id", () => Int)
-        id: number,
+        @Arg('id', () => Int)
+        id: number
     ): Promise<boolean> {
         await this.userRepo.delete({
             id: id,

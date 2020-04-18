@@ -1,6 +1,6 @@
-import { Query, Resolver, Mutation, Arg, Int } from "type-graphql"
-import { Repository, getRepository } from "typeorm"
-import { Drone } from "../entities/drone"
+import { Query, Resolver, Mutation, Arg, Int } from 'type-graphql'
+import { Repository, getRepository } from 'typeorm'
+import { Drone } from '../entities/drone'
 
 @Resolver(() => Drone)
 export class DroneResolver {
@@ -13,8 +13,8 @@ export class DroneResolver {
 
     @Mutation(() => Drone)
     protected async createDrone(
-        @Arg("name", () => String)
-        name: string,
+        @Arg('name', () => String)
+        name: string
     ): Promise<Drone> {
         let drone: Drone = this.droneRepo.create({
             name: name,
@@ -25,8 +25,8 @@ export class DroneResolver {
 
     @Mutation(() => Boolean)
     protected async deleteDroneByID(
-        @Arg("id", () => Int)
-        id: number,
+        @Arg('id', () => Int)
+        id: number
     ): Promise<boolean> {
         await this.droneRepo.delete({
             id: id,

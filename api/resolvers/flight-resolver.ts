@@ -1,7 +1,8 @@
-import { Query, Resolver, Mutation, Arg, Int } from "type-graphql"
-import { Repository, getRepository } from "typeorm"
-import { Flight } from "../entities/flight"
-import { Session } from "../entities/session"
+import { Query, Resolver, Mutation, Arg, Int } from 'type-graphql'
+import { Repository, getRepository } from 'typeorm'
+import { Flight } from '../entities/flight'
+import { Session } from '../entities/session'
+import { createFolder, deleteFile } from '../file_manager/file_manager'
 
 @Resolver(() => Flight)
 export class FlightResolver {
@@ -15,20 +16,24 @@ export class FlightResolver {
 
     @Mutation(() => Boolean)
     protected async deleteFlightByID(
-        @Arg("id", () => Int)
-        id: number,
+        @Arg('id', () => Int)
+        id: number
     ): Promise<boolean> {
-        await this.flightRepo.delete({
+        let flight: Flight = await this.flightRepo.findOneOrFail({
             id: id,
         })
 
+        await deleteFile(flight.driveId)
+        await this.flightRepo.delete({
+            id: id,
+        })
         return true
     }
 
     @Query(() => Flight)
     protected async returnFlightByID(
-        @Arg("id", () => Int)
-        id: number,
+        @Arg('id', () => Int)
+        id: number
     ): Promise<Flight> {
         return this.flightRepo.findOneOrFail({
             id: id,
@@ -37,21 +42,29 @@ export class FlightResolver {
 
     @Mutation(() => Flight)
     protected async createFlight(
-        @Arg("purpose", () => String)
+        @Arg('purpose', () => String)
         purpose: string,
+        @Arg('name', () => String)
+        name : string
     ): Promise<Flight> {
+
+        var driveId: string = await createFolder(
+            name
+        )
+
         let flight: Flight = this.flightRepo.create({
             purpose: purpose,
+            driveId: driveId
         })
         return flight.save()
     }
 
     @Mutation(() => Flight)
     protected async addFlightDescription(
-        @Arg("id", () => Int)
+        @Arg('id', () => Int)
         id: number,
-        @Arg("description", () => String)
-        description: string,
+        @Arg('description', () => String)
+        description: string
     ): Promise<Flight> {
         let flight: Flight = await this.flightRepo.findOneOrFail({
             id: id,
@@ -62,10 +75,10 @@ export class FlightResolver {
 
     @Mutation(() => Flight)
     protected async addFlightOutcome(
-        @Arg("id", () => Int)
+        @Arg('id', () => Int)
         id: number,
-        @Arg("outcome", () => String)
-        outcome: string,
+        @Arg('outcome', () => String)
+        outcome: string
     ): Promise<Flight> {
         let flight: Flight = await this.flightRepo.findOneOrFail({
             id: id,
@@ -77,10 +90,10 @@ export class FlightResolver {
 
     @Mutation(() => Flight)
     protected async addFlightSession(
-        @Arg("flightid", () => Int)
+        @Arg('flightid', () => Int)
         flightid: number,
-        @Arg("sessionid", () => Int)
-        sessionid: number,
+        @Arg('sessionid', () => Int)
+        sessionid: number
     ): Promise<Flight> {
         let flight: Flight = await this.flightRepo.findOneOrFail({
             id: flightid,
