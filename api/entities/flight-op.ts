@@ -10,157 +10,157 @@ export class FlightOp extends BaseEntity {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  completedBy: string;
+  completedBy: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  date: string;
+  date: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  location: string;
+  location: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  onCampus: boolean;
+  onCampus: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  airframe: string;
+  airframe: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  registrationNumber: string;
+  registrationNumber: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  purpose: string;
+  purpose: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  airspaceNotified: string;
+  airspaceNotified: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  startTime: string;
+  startTime: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  duration: string;
+  duration: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  PIC: string;
+  PIC: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  UAP: string;
+  UAP: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  GSO: string;
+  GSO: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  VOs: string;
+  VOs: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  weather: string;
+  weather: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  terrain: string;
+  terrain: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  equipment: string;
+  equipment: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  populatedArea: boolean;
+  populatedArea: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  potentialHazards: string;
+  potentialHazards: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  leadApprovalSignature: string;
+  leadApprovalSignature: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  PICApprovalSignature: string;
+  PICApprovalSignature: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  PICRegistrationNumber: string;
+  PICRegistrationNumber: String;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  frame: boolean;
+  frame: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  motors: boolean;
+  motors: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  propellors: boolean;
+  propellors: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  batteries: boolean;
+  batteries: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  sensors: boolean;
+  sensors: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  payload: boolean;
+  payload: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  groundStation: boolean;
+  groundStation: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  rangeFinder: boolean;
+  rangeFinder: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  opticalFlow: boolean;
+  opticalFlow: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  onBoardComputer: boolean;
+  onBoardComputer: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  flightBoard: boolean;
+  flightBoard: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  voltageAlarms: boolean;
+  voltageAlarms: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  failSafe: boolean;
+  failSafe: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  verifiedFlightPlan: boolean;
+  verifiedFlightPlan: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  pilotInPosition: boolean;
+  pilotInPosition: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  VOsInPosition: boolean;
+  VOsInPosition: Boolean;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  groundStationReady: boolean;
+  groundStationReady: Boolean;
 }
